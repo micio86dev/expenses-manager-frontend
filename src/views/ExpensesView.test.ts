@@ -248,6 +248,15 @@ describe('ExpensesView', () => {
     expect(sheet.editing?.id).toBe('e1')
   })
 
+  it('names an expense whose category is unknown', async () => {
+    expensesApi.list.mockResolvedValue({
+      data: [makeExpense({ categoryId: 'gone' })],
+      meta: { ...meta, total: 1 },
+    })
+    const { wrapper } = await render()
+    expect(wrapper.get('.row').text()).toContain('Unknown category')
+  })
+
   it('has no axe violations in any state', async () => {
     const { wrapper } = await render()
     await expectNoA11yViolations(wrapper.element)

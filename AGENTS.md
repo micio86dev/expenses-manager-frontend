@@ -39,6 +39,8 @@ support 7.x.
   `prefers-reduced-motion`.
 - TDD: write the failing test first. Thresholds are 90% on lines, functions, statements and
   branches; never lower them, never add lint or type ignores to pass a gate.
+- Playwright specs install the mocked API with `installApp` from `e2e/support/mock-api.ts` (it pins
+  the date) and check accessibility with `expectNoViolations` from `e2e/support/axe.ts`.
 - Tests that need the whole app use `renderWithApp` and `expectNoA11yViolations` from
   `tests/helpers.ts`; auth API mocks live in `tests/api-mock.ts`.
 
