@@ -30,12 +30,67 @@ Enable the repository hooks once with `git config core.hooksPath .githooks`
 | `pnpm test`                 | Vitest unit tests (happy-dom)                                           |
 | `pnpm coverage`             | Unit tests with a 90% gate on lines, functions, statements and branches |
 | `pnpm e2e`                  | Playwright fast suite against the built app with a mocked API           |
+| `pnpm e2e:fullstack`        | Playwright against the running docker stack (real API)                  |
+| `pnpm lighthouse`           | Mobile Lighthouse (performance, accessibility, best practices >= 90)    |
 | `pnpm contract`             | Copy `../contracts/openapi.yaml` and regenerate `src/api/schema.d.ts`   |
 | `pnpm gen:api`              | Regenerate the API types from the local contract copy                   |
 | `pnpm budget`               | Fail when initial JS exceeds 150 kB gzip (run after `vite build`)       |
 
 `make setup|test|coverage|lint|typecheck|e2e|build|format` wrap the same commands.
 The first e2e run needs a browser: `pnpm exec playwright install chromium`.
+
+## Environment
+
+| Variable            | Used by                | Default                                                 |
+| ------------------- | ---------------------- | ------------------------------------------------------- |
+| `VITE_API_BASE_URL` | the app (build or dev) | `http://localhost:8000/api/v1`                          |
+| `E2E_API_URL`       | `pnpm e2e:fullstack`   | `http://localhost:${API_PORT:-8000}`                    |
+| `E2E_BASE_URL`      | `pnpm e2e:fullstack`   | `http://localhost:5173`                                 |
+| `API_PORT`          | `pnpm e2e:fullstack`   | `8000` (same variable as the root `docker-compose.yml`) |
+
+## Tests
+
+Three layers, from fastest to most realistic:
+
+1. **Unit** (`pnpm test`, `pnpm coverage`): Vitest and Testing Library style component tests in
+   `src/**/*.test.ts` and `tests/`. Coverage must stay at or above 90%.
+2. **Mocked e2e** (`pnpm e2e`): Playwright against the production build, desktop and mobile, with
+   the API mocked per spec (`e2e/support/mock-api.ts`) and axe checks. No backend needed.
+3. **Full-stack e2e** (`pnpm e2e:fullstack`): one Playwright journey against the real SPA and
+   API: register a unique user, add a category and expenses, check the dashboard totals, filter
+   by date range, sign out. It never starts the stack and fails fast with instructions when the
+   API or the SPA is unreachable. Start the stack from the superproject root first:
+
+   ```bash
+   ./start.sh        # or: docker compose up -d --build --wait
+   docker compose exec -T -u www-data php php artisan migrate --force
+   pnpm e2e:fullstack                                   # default ports 8000 and 5173
+   API_PORT=8100 pnpm e2e:fullstack                     # when the API is published elsewhere
+   ```
+
+   The SPA container must have been started with the same `API_PORT`, because it bakes the API
+   URL into `VITE_API_BASE_URL`. Reports go to `playwright-report-fullstack/`.
+
+## Lighthouse
+
+`pnpm lighthouse` builds the production app, serves it with `vite preview` and audits the login
+page and the signed-in dashboard with the mobile profile (simulated slow 4G, mid-range phone).
+The dashboard is signed in through a token in `localStorage` and served by a small mock API
+(`lighthouse/mock-server.ts`, built from the e2e fixtures), so no backend is needed. Pages and
+thresholds live in `lighthouserc.json`; the run fails when performance, accessibility or best
+practices drop below 90. HTML reports are written to `lighthouse-report/`. Scores vary by a
+few points between runs.
+
+Chromium comes from Playwright (`pnpm exec playwright install chromium`).
+
+## Continuous integration
+
+`.github/workflows/frontend.yml` (install, typecheck, lint, coverage, build with budget,
+`pnpm audit --prod`, mocked e2e) is dormant: it only runs on `workflow_dispatch` until the
+repository has a remote and the commented `push` and `pull_request` triggers are enabled.
+Dependabot (`.github/dependabot.yml`) proposes weekly npm and GitHub Actions updates.
+
+See the [root README](../README.md) for the whole project (stack, `docker compose`, Git Flow).
 
 ## Architecture
 
