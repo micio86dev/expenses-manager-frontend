@@ -4,6 +4,8 @@ coverage
 .env
 .env.local
 playwright-report
+playwright-report-fullstack
 test-results
 .vite
 *.tsbuildinfo
+.pnpm-store

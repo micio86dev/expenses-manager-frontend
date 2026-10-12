@@ -9,7 +9,14 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 const DATES_FACADE = 'src/lib/dates.ts'
 
 export default defineConfig(
-  globalIgnores(['dist', 'coverage', 'playwright-report', 'test-results', 'src/api/schema.d.ts']),
+  globalIgnores([
+    'dist',
+    'coverage',
+    'playwright-report',
+    'playwright-report-fullstack',
+    'test-results',
+    'src/api/schema.d.ts',
+  ]),
   js.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
@@ -73,7 +80,7 @@ export default defineConfig(
     languageOptions: { globals: { ...globals.node } },
   },
   {
-    files: ['*.config.ts', 'e2e/**/*.ts', 'tests/**/*.ts'],
+    files: ['*.config.ts', 'e2e/**/*.ts', 'e2e-fullstack/**/*.ts', 'tests/**/*.ts'],
     languageOptions: { globals: { ...globals.node } },
   },
   prettier,

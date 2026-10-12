@@ -51,6 +51,7 @@
     "test": "vitest run",
     "coverage": "vitest run --coverage",
     "e2e": "playwright test",
+    "e2e:fullstack": "playwright test --config playwright.fullstack.config.ts",
     "contract": "cp ../contracts/openapi.yaml contracts/openapi.yaml && pnpm run gen:api",
     "gen:api": "openapi-typescript contracts/openapi.yaml -o src/api/schema.d.ts",
     "budget": "node scripts/check-bundle-budget.mjs"

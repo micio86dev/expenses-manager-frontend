@@ -25,6 +25,7 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "e2e/**/*.ts",
+    "e2e-fullstack/**/*.ts",
     "*.config.ts",
     "*.config.js"
   ]
