@@ -60,7 +60,7 @@ const options = computed<ChartOptions<'doughnut'>>(() => ({
 <template>
   <div class="breakdown">
     <ChartFigure :label="summary">
-      <Doughnut :data="data" :options="options" />
+      <Doughnut aria-hidden="true" :data="data" :options="options" />
     </ChartFigure>
     <ol class="ranking" :aria-label="t('dashboard.categories.listLabel')">
       <li v-for="item in items" :key="item.categoryId" class="ranking__row">

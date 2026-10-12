@@ -71,7 +71,7 @@ const options = computed<ChartOptions<'bar'>>(() => ({
 <template>
   <div>
     <ChartFigure :label="summary">
-      <Bar :data="data" :options="options" />
+      <Bar aria-hidden="true" :data="data" :options="options" />
     </ChartFigure>
     <table class="visually-hidden">
       <caption>

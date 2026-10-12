@@ -91,7 +91,7 @@ const options = computed<ChartOptions<'line'>>(() => ({
 <template>
   <div class="comparison">
     <ChartFigure :label="summary">
-      <Line :data="data" :options="options" />
+      <Line aria-hidden="true" :data="data" :options="options" />
     </ChartFigure>
     <ul class="comparison__legend" aria-hidden="true">
       <li class="comparison__key comparison__key--current">

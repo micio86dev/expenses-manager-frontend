@@ -1,14 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 import { expectNoViolations } from './support/axe'
-import { USER } from './support/mock-api'
+import { installApp } from './support/mock-api'
 
-async function mockApi(page: Page): Promise<void> {
-  await page.route('**/api/v1/auth/login', (route) =>
-    route.fulfill({ json: { data: { token: 'test-token', user: USER } } }),
-  )
-  await page.route('**/api/v1/auth/me', (route) => route.fulfill({ json: { data: USER } }))
-  await page.route('**/api/v1/auth/logout', (route) => route.fulfill({ status: 204 }))
-}
+const mockApi = (page: Page) => installApp(page, { signedIn: false, expenses: [] })
 
 for (const colorScheme of ['light', 'dark'] as const) {
   test.describe(`${colorScheme} theme`, () => {
@@ -27,16 +21,13 @@ for (const colorScheme of ['light', 'dark'] as const) {
 }
 
 test('signs in against the mocked API and shows the app shell', async ({ page }) => {
-  await page.context().addInitScript(() => {
-    localStorage.setItem('expenses.locale', 'en')
-  })
   await mockApi(page)
   await page.goto('/login')
   await page.getByLabel('Email').fill('ada@example.com')
   await page.getByLabel('Password').fill('secret-password')
   await page.getByRole('button', { name: 'Sign in' }).click()
 
-  await expect(page).toHaveURL(/\/$/)
+  await expect(page).toHaveURL(/\/\?period=month/)
   await expect(page.getByRole('heading', { level: 1, name: 'Dashboard' })).toBeVisible()
   await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeVisible()
 

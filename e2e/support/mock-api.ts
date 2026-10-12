@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test'
+import { etagOf, statsBody } from './mock-stats'
 
 // A small in-memory stand-in for the API, driven by `page.route`. It implements the parts of the
 // contract the categories and expenses screens use, including validation of `from` and `to`.
@@ -29,6 +30,8 @@ export interface RecordedRequest {
   path: string
   query: Record<string, string>
   body: unknown
+  /** The `If-None-Match` header of the request, when the client revalidated a cached answer. */
+  ifNoneMatch?: string
 }
 
 export const USER = {
@@ -107,6 +110,8 @@ export interface MockApi {
 interface Options {
   categories?: MockCategory[]
   expenses?: MockExpense[]
+  /** Start with a stored token (default). Pass false to begin on the login page. */
+  signedIn?: boolean
 }
 
 const PROBLEM_TITLES: Record<number, string> = {
@@ -146,10 +151,10 @@ export async function installApp(page: Page, options: Options = {}): Promise<Moc
     },
   }
   await page.clock.setFixedTime(TODAY)
-  await page.addInitScript(() => {
-    localStorage.setItem('expenses.token', 'test-token')
+  await page.addInitScript((signedIn) => {
+    if (signedIn) localStorage.setItem('expenses.token', 'test-token')
     localStorage.setItem('expenses.locale', 'en')
-  })
+  }, options.signedIn ?? true)
 
   await page.route('**/api/v1/**', async (route) => {
     const request = route.request()
@@ -159,7 +164,14 @@ export async function installApp(page: Page, options: Options = {}): Promise<Moc
     const query = Object.fromEntries(url.searchParams)
     const raw = request.postData()
     const body: unknown = raw === null ? undefined : JSON.parse(raw)
-    state.requests.push({ method: request.method(), path, query, body })
+    const ifNoneMatch = request.headers()['if-none-match']
+    state.requests.push({
+      method: request.method(),
+      path,
+      query,
+      body,
+      ...(ifNoneMatch === undefined ? {} : { ifNoneMatch }),
+    })
 
     if (drops.delete(key)) {
       await route.abort('failed')
@@ -173,11 +185,26 @@ export async function installApp(page: Page, options: Options = {}): Promise<Moc
       return
     }
 
+    const stats = statsBody(path, query, state.expenses, state.categories)
+    if (request.method() === 'GET' && stats !== null) {
+      if (query.from === undefined || query.to === undefined) {
+        await route.fulfill(problem(422, { errors: { from: ['Required.'] } }))
+        return
+      }
+      const etag = etagOf(stats)
+      await (ifNoneMatch === etag
+        ? route.fulfill({ status: 304, headers: { ETag: etag } })
+        : route.fulfill({ status: 200, json: stats, headers: { ETag: etag } }))
+      return
+    }
+
     const id = /\/([ce]-\d+)/.exec(path)?.[1]
     const respond = (status: number, json?: unknown): Promise<void> =>
       route.fulfill(json === undefined ? { status } : { status, json })
     const handlers: Record<string, () => Promise<void>> = {
       'GET /auth/me': () => respond(200, { data: USER }),
+      'POST /auth/login': () => respond(200, { data: { token: 'test-token', user: USER } }),
+      'POST /auth/logout': () => respond(204),
       'GET /categories': () =>
         respond(200, {
           data: state.categories
