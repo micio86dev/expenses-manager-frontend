@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
-.PHONY: help setup test coverage lint typecheck e2e build format
+.PHONY: help setup test coverage lint typecheck e2e e2e-fullstack lighthouse build format
 
 help: ## Show available targets
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z_-]+:.*## / {printf "  %-12s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -24,6 +24,12 @@ typecheck: ## Run vue-tsc
 
 e2e: ## Run Playwright suites
 	pnpm e2e
+
+e2e-fullstack: ## Playwright against the running docker stack (start it first)
+	pnpm e2e:fullstack
+
+lighthouse: ## Mobile Lighthouse audit (>= 90) of the production build
+	pnpm lighthouse
 
 build: ## Production build and bundle budget check
 	pnpm build

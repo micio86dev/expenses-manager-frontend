@@ -2,8 +2,10 @@ node_modules
 dist
 coverage
 playwright-report
+playwright-report-fullstack
 test-results
 pnpm-lock.yaml
 contracts
 src/api/schema.d.ts
 .atl
+lighthouse-report

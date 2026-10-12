@@ -32,6 +32,7 @@
     "eslint-plugin-vuejs-accessibility": "^2.6.2",
     "globals": "^17.13.0",
     "happy-dom": "^20.14.6",
+    "lighthouse": "^13.5.0",
     "openapi-typescript": "^7.13.0",
     "prettier": "^3.9.10",
     "typescript": "^6.0.3",
@@ -51,6 +52,8 @@
     "test": "vitest run",
     "coverage": "vitest run --coverage",
     "e2e": "playwright test",
+    "lighthouse": "playwright test --config playwright.lighthouse.config.ts",
+    "e2e:fullstack": "playwright test --config playwright.fullstack.config.ts",
     "contract": "cp ../contracts/openapi.yaml contracts/openapi.yaml && pnpm run gen:api",
     "gen:api": "openapi-typescript contracts/openapi.yaml -o src/api/schema.d.ts",
     "budget": "node scripts/check-bundle-budget.mjs"
