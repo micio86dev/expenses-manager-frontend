@@ -18,7 +18,7 @@ COPY --chown=node:node . .
 USER node
 ENV VITE_API_BASE_URL=http://localhost:8000/api/v1
 EXPOSE 5173
-CMD ["pnpm", "exec", "vite", "--host", "0.0.0.0", "--port", "5173"]
+CMD ["node_modules/.bin/vite", "--host", "0.0.0.0", "--port", "5173"]
 
 FROM deps AS build
 ARG VITE_API_BASE_URL=/api/v1
