@@ -1,6 +1,8 @@
 import { i18n } from '@/i18n'
 import { createAuthApi } from './auth'
+import { createCategoriesApi } from './categories'
 import { createApiClient } from './client'
+import { createExpensesApi } from './expenses'
 import { tokenStorage } from './token'
 
 let unauthorizedHandler: () => void = () => undefined
@@ -20,3 +22,5 @@ export const apiClient = createApiClient({
 })
 
 export const authApi = createAuthApi(apiClient)
+export const categoriesApi = createCategoriesApi(apiClient)
+export const expensesApi = createExpensesApi(apiClient)

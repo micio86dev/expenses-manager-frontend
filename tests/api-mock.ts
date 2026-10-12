@@ -10,7 +10,23 @@ export const authApi = {
   updateMe: vi.fn(),
 }
 
-export const apiMock = { authApi, onUnauthorized: vi.fn() }
+export const categoriesApi = {
+  list: vi.fn(),
+  create: vi.fn(),
+  update: vi.fn(),
+  remove: vi.fn(),
+  archive: vi.fn(),
+  unarchive: vi.fn(),
+}
+
+export const expensesApi = {
+  list: vi.fn(),
+  create: vi.fn(),
+  update: vi.fn(),
+  remove: vi.fn(),
+}
+
+export const apiMock = { authApi, categoriesApi, expensesApi, onUnauthorized: vi.fn() }
 
 export const sampleUser: User = {
   id: 'u1',
