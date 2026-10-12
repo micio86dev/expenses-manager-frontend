@@ -258,6 +258,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/stats/top-expenses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Largest expenses for a date range
+         * @description Sorted by amount descending, then by date descending. Only expenses in the requested currency.
+         */
+        get: operations["getStatsTopExpenses"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -374,6 +394,9 @@ export interface components {
         };
         ExpenseResource: {
             data: components["schemas"]["Expense"];
+        };
+        ExpenseListResource: {
+            data: components["schemas"]["Expense"][];
         };
         ExpenseCollection: {
             data: components["schemas"]["Expense"][];
@@ -551,6 +574,7 @@ export interface components {
         PerPage: number;
         /** @description Only expenses in this currency are aggregated. Totals are never mixed across currencies. */
         StatsCurrency: components["schemas"]["Currency"];
+        Limit: number;
         Granularity: "day" | "week" | "month";
     };
     requestBodies: never;
@@ -1091,6 +1115,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TimeseriesCollection"];
+                };
+            };
+            304: components["responses"]["NotModified"];
+            401: components["responses"]["Unauthorized"];
+            422: components["responses"]["ValidationError"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    getStatsTopExpenses: {
+        parameters: {
+            query: {
+                /** @description Earliest date (inclusive). */
+                from: components["parameters"]["From"];
+                /** @description Latest date (inclusive). Must not be before `from`. */
+                to: components["parameters"]["To"];
+                /** @description Only expenses in this currency are aggregated. Totals are never mixed across currencies. */
+                currency?: components["parameters"]["StatsCurrency"];
+                limit?: components["parameters"]["Limit"];
+            };
+            header?: {
+                /** @description Return 304 when the stored ETag still matches. */
+                "If-None-Match"?: components["parameters"]["IfNoneMatch"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Top expenses, largest first */
+            200: {
+                headers: {
+                    ETag: components["headers"]["ETag"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExpenseListResource"];
                 };
             };
             304: components["responses"]["NotModified"];
