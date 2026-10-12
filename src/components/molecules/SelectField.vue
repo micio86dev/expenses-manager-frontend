@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
 
+defineOptions({ inheritAttrs: false })
+
 const props = defineProps<{
   label: string
   modelValue: string
@@ -22,6 +24,7 @@ const hasErrors = computed(() => (props.errors?.length ?? 0) > 0)
   <div class="select-field">
     <label :for="id">{{ label }}</label>
     <select
+      v-bind="$attrs"
       :id="id"
       :value="modelValue"
       :required="required"

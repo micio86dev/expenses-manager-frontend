@@ -2,6 +2,8 @@
 import { computed, useId } from 'vue'
 import BaseInput from '../atoms/BaseInput.vue'
 
+defineOptions({ inheritAttrs: false })
+
 const props = withDefaults(
   defineProps<{
     label: string
@@ -33,6 +35,7 @@ const describedby = computed(() => {
   <div class="form-field">
     <label class="form-field__label" :for="id">{{ label }}</label>
     <BaseInput
+      v-bind="$attrs"
       :id="id"
       :model-value="modelValue"
       :type="type"

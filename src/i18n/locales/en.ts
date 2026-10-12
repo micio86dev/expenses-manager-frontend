@@ -82,6 +82,15 @@ const en: Messages = {
     dayTotal: 'Day total',
     showing: 'Showing {shown} of {total}',
     loadMore: 'Load more',
+    sheet: {
+      createTitle: 'New expense',
+      editTitle: 'Edit expense',
+    },
+    confirmDelete: {
+      title: 'Delete this expense?',
+      message: 'You are about to delete “{description}” ({amount}). This cannot be undone.',
+      confirm: 'Delete expense',
+    },
     notices: {
       createFailed: 'Could not save the expense. Your change was undone.',
       updateFailed: 'Could not update the expense. Your change was undone.',
@@ -89,6 +98,15 @@ const en: Messages = {
       loadMoreFailed: 'Could not load more expenses.',
     },
     form: {
+      amount: 'Amount',
+      amountHint: 'For example 12.50',
+      currency: 'Currency',
+      recent: 'Recent categories',
+      category: 'Category',
+      categoryPlaceholder: 'Choose a category',
+      description: 'Description',
+      date: 'Date',
+      delete: 'Delete expense',
       errors: {
         amountInvalid: 'Enter an amount above zero with at most two decimals.',
         descriptionRequired: 'Enter a description.',

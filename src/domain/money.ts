@@ -13,6 +13,16 @@ export function formatMoney(minorUnits: number, currency: string, locale: string
   )
 }
 
+/** Currencies offered in the expense form; EUR is the default. */
+export const CURRENCIES = ['EUR', 'USD', 'GBP', 'CHF'] as const
+
+/** The offered currencies, preceded by the expense's own one when it is not among them. */
+export function currencyOptions(current: string): string[] {
+  return (CURRENCIES as readonly string[]).includes(current)
+    ? [...CURRENCIES]
+    : [current, ...CURRENCIES]
+}
+
 /** Largest amount the API accepts, in minor units (contract `ExpenseInput.amount_cents`). */
 export const MAX_AMOUNT_CENTS = 99_999_999_999
 

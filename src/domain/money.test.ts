@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   MAX_AMOUNT_CENTS,
+  currencyOptions,
   fractionDigits,
   formatAmountInput,
   formatMoney,
@@ -69,5 +70,10 @@ describe('money', () => {
     expect(formatAmountInput(1250, 'EUR', 'en')).toBe('12.50')
     expect(formatAmountInput(123456, 'EUR', 'it')).toBe('1234,56')
     expect(formatAmountInput(500, 'JPY', 'en')).toBe('500')
+  })
+
+  it('lists the currencies on offer and keeps the current currency selectable', () => {
+    expect(currencyOptions('EUR')).toEqual(['EUR', 'USD', 'GBP', 'CHF'])
+    expect(currencyOptions('JPY')).toEqual(['JPY', 'EUR', 'USD', 'GBP', 'CHF'])
   })
 })

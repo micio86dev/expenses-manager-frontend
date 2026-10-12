@@ -81,6 +81,15 @@ const it = {
     dayTotal: 'Totale del giorno',
     showing: 'Mostrate {shown} di {total}',
     loadMore: 'Carica altre',
+    sheet: {
+      createTitle: 'Nuova spesa',
+      editTitle: 'Modifica spesa',
+    },
+    confirmDelete: {
+      title: 'Eliminare questa spesa?',
+      message: 'Stai per eliminare “{description}” ({amount}). L’operazione non si può annullare.',
+      confirm: 'Elimina spesa',
+    },
     notices: {
       createFailed: 'Impossibile salvare la spesa. La modifica è stata annullata.',
       updateFailed: 'Impossibile aggiornare la spesa. La modifica è stata annullata.',
@@ -88,6 +97,15 @@ const it = {
       loadMoreFailed: 'Impossibile caricare altre spese.',
     },
     form: {
+      amount: 'Importo',
+      amountHint: 'Ad esempio 12,50',
+      currency: 'Valuta',
+      recent: 'Categorie recenti',
+      category: 'Categoria',
+      categoryPlaceholder: 'Scegli una categoria',
+      description: 'Descrizione',
+      date: 'Data',
+      delete: 'Elimina spesa',
       errors: {
         amountInvalid: 'Inserisci un importo maggiore di zero con al massimo due decimali.',
         descriptionRequired: 'Inserisci una descrizione.',
