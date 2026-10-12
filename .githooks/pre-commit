@@ -9,3 +9,11 @@ if echo "$staged" | grep -Eq "$pattern"; then
     make lint
     make typecheck
 fi
+
+# Guardian Angel review of the staged files runs last, after the checks above.
+# `gga install` is not used because core.hooksPath points here.
+if command -v gga >/dev/null 2>&1; then
+    gga run
+else
+    echo "pre-commit: gga not found, skipping the Guardian Angel review (brew install gentleman-programming/tap/gga)" >&2
+fi

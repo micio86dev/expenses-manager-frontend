@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
-.PHONY: help setup test coverage lint typecheck e2e e2e-fullstack lighthouse build format
+.PHONY: help setup test coverage lint typecheck e2e e2e-fullstack lighthouse build format review memory-sync
 
 help: ## Show available targets
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z_-]+:.*## / {printf "  %-12s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -36,3 +36,13 @@ build: ## Production build and bundle budget check
 
 format: ## Format sources with Prettier
 	pnpm format
+
+review: ## Guardian Angel review of every file changed in the PR (gga run --pr-mode)
+	gga run --pr-mode
+
+memory-sync: ## Sync shared Engram memory (delegates to the superproject root)
+	@if [ -f ../Makefile ]; then \
+		$(MAKE) -C .. memory-sync; \
+	else \
+		echo "memory-sync runs from the superproject root: cd .. && make memory-sync" >&2; exit 1; \
+	fi
