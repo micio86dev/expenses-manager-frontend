@@ -46,12 +46,39 @@ const en: Messages = {
       title: 'No expenses recorded',
       description: 'The expenses you add will show up here, grouped by day.',
     },
+    form: {
+      errors: {
+        amountInvalid: 'Enter an amount above zero with at most two decimals.',
+        descriptionRequired: 'Enter a description.',
+        descriptionTooLong: 'Use at most 255 characters.',
+        categoryRequired: 'Pick a category.',
+        dateInvalid: 'Enter a valid date.',
+      },
+    },
   },
   categories: {
     title: 'Categories',
     empty: {
       title: 'No categories',
       description: 'Categories help you understand where your money goes.',
+    },
+    colors: {
+      ocean: 'Ocean',
+      brick: 'Brick',
+      slate: 'Slate',
+      amber: 'Amber',
+      moss: 'Moss',
+      plum: 'Plum',
+      indigo: 'Indigo',
+      rust: 'Rust',
+    },
+    form: {
+      errors: {
+        nameRequired: 'Enter a name.',
+        nameTooLong: 'Use at most 60 characters.',
+        colorInvalid: 'Pick a colour.',
+        iconInvalid: 'Pick an icon.',
+      },
     },
   },
   settings: {

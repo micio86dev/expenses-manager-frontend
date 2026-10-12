@@ -22,6 +22,16 @@
   --color-on-danger: var(--salt);
   --color-focus: var(--ocean);
 
+  /* Category palette (mirrored by src/domain/categories.ts) */
+  --category-ocean: #0b6b72;
+  --category-brick: #a32a3a;
+  --category-slate: #3f5a63;
+  --category-amber: #8a5a00;
+  --category-moss: #3f6b2b;
+  --category-plum: #6b3a7a;
+  --category-indigo: #3d4f9e;
+  --category-rust: #b2571c;
+
   /* Typography */
   --font-sans:
     'Schibsted Grotesk Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;

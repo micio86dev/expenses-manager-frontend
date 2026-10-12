@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { CATEGORY_COLORS } from '@/domain/categories'
 
 const SRC = join(import.meta.dirname, '..', 'src')
 
@@ -19,6 +20,12 @@ describe('design tokens', () => {
   it('defines the mineral palette', () => {
     for (const hex of ['#F2F5F4', '#E3EAE8', '#1B2427', '#0B6B72', '#A32A3A']) {
       expect(tokensCss.toUpperCase()).toContain(hex)
+    }
+  })
+
+  it('keeps the category palette in sync with the tokens', () => {
+    for (const { id, hex } of CATEGORY_COLORS) {
+      expect(tokensCss.toLowerCase()).toContain(`--category-${id}: ${hex.toLowerCase()}`)
     }
   })
 

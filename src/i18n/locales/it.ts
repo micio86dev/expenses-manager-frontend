@@ -45,12 +45,39 @@ const it = {
       title: 'Nessuna spesa registrata',
       description: 'Le spese che aggiungerai compariranno qui, raggruppate per giorno.',
     },
+    form: {
+      errors: {
+        amountInvalid: 'Inserisci un importo maggiore di zero con al massimo due decimali.',
+        descriptionRequired: 'Inserisci una descrizione.',
+        descriptionTooLong: 'Usa al massimo 255 caratteri.',
+        categoryRequired: 'Scegli una categoria.',
+        dateInvalid: 'Inserisci una data valida.',
+      },
+    },
   },
   categories: {
     title: 'Categorie',
     empty: {
       title: 'Nessuna categoria',
       description: 'Le categorie ti aiutano a capire dove vanno i tuoi soldi.',
+    },
+    colors: {
+      ocean: 'Oceano',
+      brick: 'Mattone',
+      slate: 'Ardesia',
+      amber: 'Ambra',
+      moss: 'Muschio',
+      plum: 'Prugna',
+      indigo: 'Indaco',
+      rust: 'Ruggine',
+    },
+    form: {
+      errors: {
+        nameRequired: 'Inserisci un nome.',
+        nameTooLong: 'Usa al massimo 60 caratteri.',
+        colorInvalid: 'Scegli un colore.',
+        iconInvalid: 'Scegli un’icona.',
+      },
     },
   },
   settings: {
