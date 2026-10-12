@@ -46,9 +46,9 @@ src/
   pages/        thin, lazy-loaded route entries
   layouts/      app shell (tab bar / sidebar) and auth shell
   composables/  reusable behavior
-  stores/       Pinia (auth, locale)
+  stores/       Pinia (auth, locale, categories, expenses, notices, expense sheet)
   api/          typed fetch client, generated types, snake/camel mappers, Problem Details
-  domain/       pure TypeScript (money formatting and parsing)
+  domain/       pure TypeScript (money, periods, filters, grouping, validation, optimistic updates)
   router/       routes, guards, document titles
   i18n/         vue-i18n, typed keys, language registry, lazy locale chunks
   lib/dates.ts  the only module allowed to use dayjs
@@ -61,6 +61,25 @@ Key rules, enforced by ESLint and tests:
 - Translation keys are typed (`MessageKey`); `it` and `en` must have identical key sets.
 - Every CSS custom property in use must be declared in `src/styles/tokens.css`.
 - Initial JavaScript stays under 150 kB gzip.
+
+## Categories and expenses
+
+- **Money** is an integer number of cents. `parseAmount` (`src/domain/money.ts`) reads `12,50`,
+  `12.5` and `1.234,56`, and rejects zero, negatives, more than two decimals and anything above
+  the contract maximum (99,999,999,999 cents).
+- **Periods** (day, week with ISO Monday start, month, custom past range) live in the URL query
+  (`?period=month&from=2026-10-01&to=2026-10-31&category=...&q=...`), so they survive a reload and
+  the back button. `from` and `to` are always sent because the contract requires them.
+- **Optimistic updates**: create, update, archive and delete change the store immediately
+  (`runOptimistic` in `src/domain/optimistic.ts`) and roll back on failure with an error in the
+  live region of the app shell. A rejected form (422) is reopened with the draft and the server's
+  messages.
+- **Add expense** opens one bottom sheet from a floating button (mobile) or the header button
+  (desktop). The amount comes first; recent categories are remembered per user in `localStorage`
+  (`expenses.recent-categories.<user id>`).
+- **Dialogs** (`BottomSheet`, `ConfirmDialog`) trap focus, close on Escape and return focus to
+  the control that opened them.
+- Playwright specs mock the API with `e2e/support/mock-api.ts` and pin the date to 12 Oct 2026.
 
 ## Internationalization
 

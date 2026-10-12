@@ -1,27 +1,13 @@
-import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
-
-const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']
-
-const user = {
-  id: '0b6b7f0e-0000-4000-8000-000000000001',
-  name: 'Ada',
-  email: 'ada@example.com',
-  locale: 'en',
-  created_at: '2026-10-12T10:00:00Z',
-}
+import { expectNoViolations } from './support/axe'
+import { USER } from './support/mock-api'
 
 async function mockApi(page: Page): Promise<void> {
   await page.route('**/api/v1/auth/login', (route) =>
-    route.fulfill({ json: { data: { token: 'test-token', user } } }),
+    route.fulfill({ json: { data: { token: 'test-token', user: USER } } }),
   )
-  await page.route('**/api/v1/auth/me', (route) => route.fulfill({ json: { data: user } }))
+  await page.route('**/api/v1/auth/me', (route) => route.fulfill({ json: { data: USER } }))
   await page.route('**/api/v1/auth/logout', (route) => route.fulfill({ status: 204 }))
-}
-
-async function expectNoViolations(page: Page): Promise<void> {
-  const results = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze()
-  expect(results.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([])
 }
 
 for (const colorScheme of ['light', 'dark'] as const) {
