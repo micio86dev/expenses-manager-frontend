@@ -6,8 +6,9 @@ SHELL := /bin/bash
 help: ## Show available targets
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z_-]+:.*## / {printf "  %-12s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-setup: ## Install dependencies
+setup: ## Install dependencies and activate git hooks
 	pnpm install --frozen-lockfile
+	git config core.hooksPath .githooks
 
 test: ## Run unit tests
 	pnpm test
