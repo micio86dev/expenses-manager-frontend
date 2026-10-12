@@ -34,6 +34,9 @@ export default defineConfig(
       'vue/define-props-declaration': ['error', 'type-based'],
       'vue/define-emits-declaration': ['error', 'type-based'],
       'vue/multi-word-component-names': 'off',
+      // Optional props are `undefined` when omitted; type-based props do not need runtime defaults.
+      'vue/require-default-prop': 'off',
+      'vuejs-accessibility/label-has-for': ['error', { required: { some: ['nesting', 'id'] } }],
     },
   },
   {
