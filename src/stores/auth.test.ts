@@ -1,22 +1,13 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ApiError } from '@/api/errors'
-import type { User } from '@/api/types'
 import { tokenStorage } from '@/api/token'
 import { setLocale } from '@/i18n'
 import { useAuthStore } from './auth'
 import { useLocaleStore } from './locale'
+import { authApi, sampleUser as user } from '../../tests/api-mock'
 
-const authApi = vi.hoisted(() => ({
-  login: vi.fn(),
-  register: vi.fn(),
-  logout: vi.fn(),
-  getMe: vi.fn(),
-  updateMe: vi.fn(),
-}))
-vi.mock('@/api', () => ({ authApi }))
-
-const user: User = { id: 'u1', name: 'Ada', email: 'ada@example.com', locale: 'en', createdAt: 'x' }
+vi.mock('@/api', async () => (await import('../../tests/api-mock')).apiMock)
 
 describe('auth store', () => {
   beforeEach(async () => {

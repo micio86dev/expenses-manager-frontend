@@ -3,10 +3,11 @@
 // emits for the entry's static import graph. Lazy chunks (routes, locales) are not counted.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
 
 const BUDGET_KB = 150
-const DIST = new URL('../dist/', import.meta.url).pathname
+const DIST = fileURLToPath(new URL('../dist/', import.meta.url))
 const html = readFileSync(join(DIST, 'index.html'), 'utf8')
 
 const scripts = [...html.matchAll(/<script[^>]+type="module"[^>]+src="([^"]+)"/g)].map((m) => m[1])

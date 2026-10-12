@@ -5,7 +5,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useLocaleStore } from '@/stores/locale'
 import { useLanguage } from './useLanguage'
 
-vi.mock('@/api', () => ({ authApi: { updateMe: vi.fn() } }))
+vi.mock('@/api', async () => (await import('../../tests/api-mock')).apiMock)
 
 describe('useLanguage', () => {
   beforeEach(async () => {
