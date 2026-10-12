@@ -65,25 +65,6 @@ export default defineConfig(
     },
   },
   {
-    // Locale registry (and the facade test) may import dayjs locale data files only; they
-    // never touch the dayjs API.
-    files: ['src/i18n/registry.ts', 'src/lib/dates.test.ts'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          paths: [{ name: 'dayjs', message: 'dayjs may only be imported by src/lib/dates.ts.' }],
-          patterns: [
-            {
-              group: ['dayjs/plugin/*'],
-              message: 'dayjs plugins may only be imported by src/lib/dates.ts.',
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
     files: ['**/*.{js,mjs}'],
     extends: [tseslint.configs.disableTypeChecked],
     languageOptions: { globals: { ...globals.node } },

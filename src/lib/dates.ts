@@ -13,14 +13,20 @@ export type IsoDate = string
 const ISO_FORMAT = 'YYYY-MM-DD'
 
 /**
- * Switches the dayjs locale. The caller supplies the dynamic import of the dayjs locale file so
- * that each locale stays a separate lazy chunk; importing it registers the locale with dayjs.
+ * dayjs locale loaders, one lazy chunk per language. Importing a locale file registers it with
+ * dayjs. The i18n registry's locale codes must be a subset of these keys (checked by the type
+ * system through `activateDateLocale`).
  */
-export async function activateDateLocale(
-  code: string,
-  load: () => Promise<unknown>,
-): Promise<void> {
-  await load()
+const localeLoaders = {
+  it: () => import('dayjs/locale/it.js'),
+  en: () => import('dayjs/locale/en.js'),
+} as const
+
+export type DateLocaleCode = keyof typeof localeLoaders
+
+/** Loads the dayjs locale on first use and makes it the active one. */
+export async function activateDateLocale(code: DateLocaleCode): Promise<void> {
+  await localeLoaders[code]()
   dayjs.locale(code)
 }
 

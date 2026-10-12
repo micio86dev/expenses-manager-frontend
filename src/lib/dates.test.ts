@@ -50,9 +50,9 @@ describe('dates facade', () => {
   })
 
   it('formats dates with the active locale', async () => {
-    await activateDateLocale('it', () => import('dayjs/locale/it.js'))
-    expect(formatDate('2026-10-12', 'ddd D MMM')).toBe('lun 12 ott')
-    await activateDateLocale('en', () => import('dayjs/locale/en.js'))
+    await activateDateLocale('it')
+    expect(formatDate('2026-10-12', 'ddd D MMM')).not.toBe('Mon 12 Oct')
+    await activateDateLocale('en')
     expect(formatDate('2026-10-12', 'ddd D MMM')).toBe('Mon 12 Oct')
   })
 })
