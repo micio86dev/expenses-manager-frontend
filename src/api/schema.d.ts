@@ -360,7 +360,10 @@ export interface components {
         };
         ExpenseInput: {
             description: string;
-            /** Format: int64 */
+            /**
+             * Format: int64
+             * @description Minor units, at most 999,999,999.99 in a two-decimal currency.
+             */
             amount_cents: number;
             /** @default EUR */
             currency: components["schemas"]["Currency"];
