@@ -75,4 +75,12 @@ describe('useFormatters', () => {
     const italian = await formatters('it')
     expect(italian.amountInput(1250, 'EUR')).toBe('12,50')
   })
+
+  it('labels chart buckets by granularity and formats shares', async () => {
+    const en = await formatters('en')
+    expect(en.bucket('2026-10-12', 'day')).toBe('12 Oct')
+    expect(en.bucket('2026-10-12', 'week')).toBe('12 Oct')
+    expect(en.bucket('2026-10-01', 'month')).toBe('Oct 2026')
+    expect(en.percent(70)).toBe('70%')
+  })
 })

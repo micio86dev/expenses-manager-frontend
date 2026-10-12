@@ -5,6 +5,8 @@ import {
   apportionShares,
   bucketStarts,
   categoryColor,
+  currencyFromQuery,
+  DEFAULT_CURRENCY,
   describeDelta,
   fillBuckets,
   granularityFor,
@@ -245,5 +247,14 @@ describe('categoryColor', () => {
   it('falls back to the palette, cycling when it runs out', () => {
     expect(categoryColor(undefined, 1)).toBe(CATEGORY_COLORS[1].hex)
     expect(categoryColor(undefined, CATEGORY_COLORS.length)).toBe(CATEGORY_COLORS[0].hex)
+  })
+})
+
+describe('currencyFromQuery', () => {
+  it('accepts an offered currency and falls back to the default', () => {
+    expect(currencyFromQuery('USD')).toBe('USD')
+    expect(currencyFromQuery('XXX')).toBe(DEFAULT_CURRENCY)
+    expect(currencyFromQuery(undefined)).toBe(DEFAULT_CURRENCY)
+    expect(currencyFromQuery(['USD'])).toBe(DEFAULT_CURRENCY)
   })
 })

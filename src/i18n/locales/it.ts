@@ -34,9 +34,55 @@ const it = {
   },
   dashboard: {
     title: 'Panoramica',
+    currency: 'Valuta',
+    range: {
+      apply: 'Mostra intervallo',
+    },
     empty: {
-      title: 'Ancora nessun dato',
-      description: 'Quando registrerai le prime spese, qui vedrai come stai spendendo.',
+      title: 'Nessuna spesa in questo periodo',
+      description: 'Aggiungi una spesa o scegli un altro periodo per vedere come spendi.',
+    },
+    kpi: {
+      label: 'Numeri principali',
+      total: 'Totale speso',
+      delta: 'Variazione',
+      average: 'Media giornaliera',
+      averageOver: 'Su {days} giorni',
+      count: 'Spese',
+      deltaUp: '+{percent}% rispetto al periodo precedente',
+      deltaDown: '-{percent}% rispetto al periodo precedente',
+      deltaFlat: 'Nessuna variazione rispetto al periodo precedente',
+      deltaNone: 'Nessuna spesa nel periodo precedente',
+    },
+    spend: {
+      title: 'Spese nel tempo',
+      summary: 'Spese nel tempo: {total} in totale, il massimo è {peak} il {date}.',
+      summaryNone: 'Spese nel tempo: in questo periodo non hai speso nulla.',
+      amount: 'Importo',
+      bucket: {
+        day: 'Giorno',
+        week: 'Settimana dal',
+        month: 'Mese',
+      },
+    },
+    categories: {
+      title: 'Spese per categoria',
+      summary: 'Spese per categoria: {name} è la più alta con il {percent}% di {total}.',
+      summaryNone: 'Spese per categoria: in questo periodo non hai speso nulla.',
+      listLabel: 'Categorie ordinate per spesa',
+      name: 'Categoria',
+      amount: 'Importo',
+      share: 'Quota',
+    },
+    comparison: {
+      title: 'Confronto con il periodo precedente',
+      summary: 'Confronto con il periodo precedente: {current} ora contro {previous} prima.',
+      current: 'Questo periodo',
+      previous: 'Periodo precedente',
+    },
+    top: {
+      title: 'Spese più alte',
+      listLabel: 'Le spese più alte di questo periodo',
     },
   },
   expenses: {
@@ -199,6 +245,10 @@ const it = {
       title: 'Account',
       logout: 'Esci',
     },
+  },
+  format: {
+    pair: '{first} · {second}',
+    range: '{from} – {to}',
   },
   common: {
     edit: 'Modifica',

@@ -9,9 +9,19 @@ import {
   startOfMonth,
 } from '@/lib/dates'
 import { CATEGORY_COLORS } from './categories'
+import { CURRENCIES } from './money'
 import type { Period } from './period'
 
 export type { Granularity }
+
+export const DEFAULT_CURRENCY = 'EUR'
+
+/** The currency in the URL when it is one the app offers, otherwise the default. */
+export function currencyFromQuery(value: unknown): string {
+  return typeof value === 'string' && (CURRENCIES as readonly string[]).includes(value)
+    ? value
+    : DEFAULT_CURRENCY
+}
 
 /** Number of days a period covers, counting both ends. */
 export function periodDays(period: Period): number {
@@ -45,6 +55,16 @@ export function describeDelta(deltaPercent: number | null): DeltaView {
   const percent = Math.round(Math.abs(deltaPercent) * 10) / 10
   if (percent === 0) return { direction: 'flat', percent: 0 }
   return { direction: deltaPercent > 0 ? 'up' : 'down', percent }
+}
+
+export interface KpiView {
+  currency: string
+  totalCents: number
+  count: number
+  dailyAverageCents: number
+  /** Days the period covers, to explain what the daily average is averaged over. */
+  days: number
+  delta: DeltaView
 }
 
 /**

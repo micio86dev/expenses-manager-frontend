@@ -288,12 +288,10 @@ describe('dashboard store', () => {
     expect(store.kpi?.totalCents).toBe(10_000)
   })
 
-  it('flags a 304 that arrives without a cached copy instead of waiting forever', async () => {
+  it('refuses a 304 that arrives without a cached copy', async () => {
     statsApi.summary.mockResolvedValue(unchanged)
     const store = useDashboardStore()
-    await store.load(week, 'EUR')
-    expect(store.cards.kpi.status).toBe('error')
-    expect(store.cards.kpi.error?.status).toBe(304)
+    await expect(store.load(week, 'EUR')).rejects.toThrow('304')
   })
 
   it('retries the failed period', async () => {

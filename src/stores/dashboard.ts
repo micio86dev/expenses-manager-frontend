@@ -7,9 +7,11 @@ import type { StatsRequestOptions } from '@/api/stats'
 import type { CategoryStat, Expense, StatsSummary, TimeseriesBucket } from '@/api/types'
 import {
   alignPeriods,
+  DEFAULT_CURRENCY,
   describeDelta,
   fillBuckets,
   granularityFor,
+  type KpiView,
   periodDays,
   previousPeriod,
   rankCategories,
@@ -48,7 +50,7 @@ function combine(...slots: Slot<unknown>[]): CardState {
 
 export const useDashboardStore = defineStore('dashboard', () => {
   const period = ref<Period | null>(null)
-  const requestedCurrency = ref('EUR')
+  const requestedCurrency = ref(DEFAULT_CURRENCY)
 
   const summary = ref<Slot<StatsSummary>>(idle())
   const byCategory = ref<Slot<CategoryStat[]>>(idle())
@@ -76,7 +78,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
 
   const isEmpty = computed(() => summary.value.data?.count === 0)
 
-  const kpi = computed(() => {
+  const kpi = computed<KpiView | null>(() => {
     const data = summary.value.data
     if (data === null || period.value === null) return null
     return {
@@ -135,17 +137,14 @@ export const useDashboardStore = defineStore('dashboard', () => {
         signal,
         ...(cached?.etag == null ? {} : { etag: cached.etag }),
       })
-      if (!result.notModified) cache.set(cacheKey, { data: result.data, etag: result.etag })
+      const entry: CacheEntry | undefined = result.notModified
+        ? cached
+        : { data: result.data, etag: result.etag }
+      // An ETag is only sent for a cached copy, so a 304 always has one to fall back on.
+      if (entry === undefined) throw new Error('Received 304 Not Modified without a cached copy')
+      cache.set(cacheKey, entry)
       if (mine !== generation) return
-      const entry = result.notModified ? cached : cache.get(cacheKey)
-      slot.value =
-        entry === undefined
-          ? {
-              status: 'error',
-              data: null,
-              error: new ApiError({ kind: 'problem', status: 304, title: 'Not modified' }),
-            }
-          : { status: 'ready', data: entry.data as T, error: null }
+      slot.value = { status: 'ready', data: entry.data as T, error: null }
     } catch (caught) {
       if (mine !== generation) return
       if (!(caught instanceof ApiError)) throw caught
