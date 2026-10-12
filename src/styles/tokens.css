@@ -1,0 +1,76 @@
+/* Design tokens: cold mineral palette, one variable family, spacing, radius and motion. */
+:root {
+  color-scheme: light dark;
+
+  /* Palette */
+  --salt: #f2f5f4;
+  --mist: #e3eae8;
+  --basalt: #1b2427;
+  --ocean: #0b6b72;
+  --brick: #a32a3a;
+
+  /* Semantic colours (light) */
+  --color-bg: var(--salt);
+  --color-surface: #ffffff;
+  --color-rule: var(--mist);
+  --color-border: #6f7f83;
+  --color-text: var(--basalt);
+  --color-text-muted: #4b5a5e;
+  --color-accent: var(--ocean);
+  --color-on-accent: var(--salt);
+  --color-danger: var(--brick);
+  --color-on-danger: var(--salt);
+  --color-focus: var(--ocean);
+
+  /* Typography */
+  --font-sans:
+    'Schibsted Grotesk Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.625rem;
+  --text-amount: clamp(2.5rem, 12vw, 4rem);
+  --weight-regular: 400;
+  --weight-medium: 560;
+  --weight-bold: 720;
+  --leading-tight: 1.2;
+  --leading-body: 1.5;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  /* Radius and sizing */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --target-min: 2.75rem;
+  --sidebar-width: 15rem;
+  --tabbar-height: 3.5rem;
+
+  /* Motion */
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: var(--basalt);
+    --color-surface: #243034;
+    --color-rule: #34434a;
+    --color-border: #8a9a9e;
+    --color-text: var(--salt);
+    --color-text-muted: #a3b3b7;
+    --color-accent: #5cc4cc;
+    --color-on-accent: var(--basalt);
+    --color-danger: #f28b97;
+    --color-on-danger: var(--basalt);
+    --color-focus: #5cc4cc;
+  }
+}
