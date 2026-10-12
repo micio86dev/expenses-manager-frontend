@@ -26,7 +26,14 @@ export const expensesApi = {
   remove: vi.fn(),
 }
 
-export const apiMock = { authApi, categoriesApi, expensesApi, onUnauthorized: vi.fn() }
+export const statsApi = {
+  summary: vi.fn(),
+  byCategory: vi.fn(),
+  timeseries: vi.fn(),
+  topExpenses: vi.fn(),
+}
+
+export const apiMock = { authApi, categoriesApi, expensesApi, statsApi, onUnauthorized: vi.fn() }
 
 export const sampleUser: User = {
   id: 'u1',

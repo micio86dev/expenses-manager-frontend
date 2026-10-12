@@ -23,8 +23,22 @@ export interface RequestOptions {
   signal?: AbortSignal
 }
 
+export interface ConditionalOptions extends RequestOptions {
+  /** ETag of the copy the caller already holds; sent as `If-None-Match`. */
+  etag?: string
+}
+
+/** Either "your copy is still current" (304) or a fresh body with its ETag (null when absent). */
+export type Conditional<T> =
+  { notModified: true } | { notModified: false; data: T; etag: string | null }
+
 export interface ApiClient {
   request: <T = undefined>(method: string, path: string, options?: RequestOptions) => Promise<T>
+  conditional: <T>(
+    method: string,
+    path: string,
+    options?: ConditionalOptions,
+  ) => Promise<Conditional<T>>
 }
 
 export function createApiClient(options: ApiClientOptions): ApiClient {
@@ -32,7 +46,7 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
   const baseUrl = options.baseUrl.replace(/\/+$/, '')
 
   // The single place where authentication and localization headers are decided.
-  function buildHeaders(auth: boolean, hasBody: boolean): Headers {
+  function buildHeaders(auth: boolean, hasBody: boolean, etag: string | undefined): Headers {
     const headers = new Headers({
       Accept: 'application/json',
       'Accept-Language': options.getLocale(),
@@ -40,6 +54,7 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
     const token = options.getToken()
     if (auth && token !== null) headers.set('Authorization', `Bearer ${token}`)
     if (hasBody) headers.set('Content-Type', 'application/json')
+    if (etag !== undefined) headers.set('If-None-Match', etag)
     return headers
   }
 
@@ -62,17 +77,23 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
     }
   }
 
-  async function request<T = undefined>(
+  interface Outcome {
+    notModified: boolean
+    data: unknown
+    etag: string | null
+  }
+
+  async function perform(
     method: string,
     path: string,
-    { query, body, auth = true, signal }: RequestOptions = {},
-  ): Promise<T> {
+    { query, body, auth = true, signal, etag }: ConditionalOptions,
+  ): Promise<Outcome> {
     const hasBody = body !== undefined
     let response: Response
     try {
       response = await send(buildUrl(path, query), {
         method,
-        headers: buildHeaders(auth, hasBody),
+        headers: buildHeaders(auth, hasBody, etag),
         ...(hasBody ? { body: JSON.stringify(snakeizeKeys(body)) } : {}),
         ...(signal === undefined ? {} : { signal }),
       })
@@ -81,13 +102,30 @@ export function createApiClient(options: ApiClientOptions): ApiClient {
       throw ApiError.network()
     }
 
+    if (response.status === 304) return { notModified: true, data: undefined, etag: null }
     const payload = await decode(response)
     if (!response.ok) {
       if (response.status === 401 && auth) options.onUnauthorized()
       throw parseProblem(response.status, payload)
     }
-    return camelizeKeys(payload) as T
+    return { notModified: false, data: camelizeKeys(payload), etag: response.headers.get('ETag') }
   }
 
-  return { request }
+  return {
+    request: async <T = undefined>(
+      method: string,
+      path: string,
+      requestOptions: RequestOptions = {},
+    ): Promise<T> => (await perform(method, path, requestOptions)).data as T,
+    conditional: async <T>(
+      method: string,
+      path: string,
+      conditionalOptions: ConditionalOptions = {},
+    ): Promise<Conditional<T>> => {
+      const outcome = await perform(method, path, conditionalOptions)
+      return outcome.notModified
+        ? { notModified: true }
+        : { notModified: false, data: outcome.data as T, etag: outcome.etag }
+    },
+  }
 }
