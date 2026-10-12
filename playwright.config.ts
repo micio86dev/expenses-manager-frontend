@@ -6,18 +6,21 @@ const PORT = 4173
 export default defineConfig({
   testDir: 'e2e',
   fullyParallel: true,
-  forbidOnly: Boolean(process.env['CI']),
-  retries: process.env['CI'] ? 1 : 0,
+  forbidOnly: Boolean(process.env.CI),
+  retries: process.env.CI ? 1 : 0,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: { baseURL: `http://localhost:${String(PORT)}`, trace: 'retain-on-failure' },
   projects: [
-    { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 800 } } },
+    {
+      name: 'desktop',
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 800 } },
+    },
     { name: 'mobile', use: { ...devices['Pixel 5'] } },
   ],
   webServer: {
     command: `pnpm exec vite build && pnpm exec vite preview --port ${String(PORT)} --strictPort`,
     url: `http://localhost:${String(PORT)}`,
-    reuseExistingServer: !process.env['CI'],
+    reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
 })
