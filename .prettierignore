@@ -8,3 +8,4 @@ pnpm-lock.yaml
 contracts
 src/api/schema.d.ts
 .atl
+lighthouse-report

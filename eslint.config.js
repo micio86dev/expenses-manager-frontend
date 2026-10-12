@@ -14,6 +14,7 @@ export default defineConfig(
     'coverage',
     'playwright-report',
     'playwright-report-fullstack',
+    'lighthouse-report',
     'test-results',
     'src/api/schema.d.ts',
   ]),
@@ -80,7 +81,13 @@ export default defineConfig(
     languageOptions: { globals: { ...globals.node } },
   },
   {
-    files: ['*.config.ts', 'e2e/**/*.ts', 'e2e-fullstack/**/*.ts', 'tests/**/*.ts'],
+    files: [
+      '*.config.ts',
+      'e2e/**/*.ts',
+      'e2e-fullstack/**/*.ts',
+      'lighthouse/**/*.ts',
+      'tests/**/*.ts',
+    ],
     languageOptions: { globals: { ...globals.node } },
   },
   prettier,

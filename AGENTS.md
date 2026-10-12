@@ -21,6 +21,8 @@ support 7.x.
 | `make lint` / `make typecheck` | ESLint + Prettier / vue-tsc                                 |
 | `make e2e`                     | Playwright fast suite (mocked API, desktop and mobile, axe) |
 | `make build`                   | Production build and the 150 kB gzip initial-JS budget      |
+| `pnpm e2e:fullstack`           | Playwright against the running docker stack (real API)      |
+| `pnpm lighthouse`              | Mobile Lighthouse (>= 90) on the production build           |
 
 ## Rules
 
@@ -41,6 +43,12 @@ support 7.x.
   branches; never lower them, never add lint or type ignores to pass a gate.
 - Playwright specs install the mocked API with `installApp` from `e2e/support/mock-api.ts` (it pins
   the date) and check accessibility with `expectNoViolations` from `e2e/support/axe.ts`.
+- The full-stack suite (`e2e-fullstack/`) never starts the stack: run `./start.sh` or
+  `docker compose up -d --wait` plus the migrations first; `E2E_API_URL`, `E2E_BASE_URL` or
+  `API_PORT` select the ports. It registers a unique user per run.
+- Lighthouse (`lighthouse/`, thresholds in `lighthouserc.json`) audits in a tab it opens itself,
+  where `page.route` cannot reach, so it uses `lighthouse/mock-server.ts` (built from the e2e
+  fixtures) instead of `installApp`. Axe already covers the same pages in `e2e/smoke.spec.ts` and `e2e/dashboard.spec.ts`; Lighthouse only scores.
 - Tests that need the whole app use `renderWithApp` and `expectNoA11yViolations` from
   `tests/helpers.ts`; auth API mocks live in `tests/api-mock.ts`.
 
