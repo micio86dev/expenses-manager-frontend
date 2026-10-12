@@ -1,0 +1,11 @@
+# Guardian Angel configuration. Reviews staged files against AGENTS.md ("Review rules").
+# The review cache is on by default (use `gga run --no-cache` to bypass it).
+PROVIDER="claude"
+RULES_FILE="AGENTS.md"
+STRICT_MODE="true"
+TIMEOUT="300"
+PR_BASE_BRANCH="develop"
+
+FILE_PATTERNS="*.ts,*.vue"
+# Generated or vendored files only. Tests are reviewed on purpose ("a test for every change").
+EXCLUDE_PATTERNS="*.d.ts,src/api/schema.d.ts,dist/*,node_modules/*"
