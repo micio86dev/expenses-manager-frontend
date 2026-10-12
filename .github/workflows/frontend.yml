@@ -123,3 +123,20 @@ jobs:
           name: playwright-report
           path: playwright-report
           if-no-files-found: ignore
+
+  # Guardian Angel review of the last commit. Dormant like the rest of this workflow.
+  gga:
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+      - name: Install Guardian Angel and the Claude Code CLI (the configured provider)
+        run: |
+          npm install -g @anthropic-ai/claude-code@2.1.296
+          git clone https://github.com/Gentleman-Programming/gentleman-guardian-angel.git "$RUNNER_TEMP/gga" && git -C "$RUNNER_TEMP/gga" checkout --quiet fbf1091da170a33d42cb97577a9813e652e98a4a
+          echo "$RUNNER_TEMP/gga/bin" >> "$GITHUB_PATH"
+      - run: gga run --ci
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

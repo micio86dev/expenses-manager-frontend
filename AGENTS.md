@@ -21,6 +21,7 @@ support 7.x.
 | `make lint` / `make typecheck` | ESLint + Prettier / vue-tsc                                 |
 | `make e2e`                     | Playwright fast suite (mocked API, desktop and mobile, axe) |
 | `make build`                   | Production build and the 150 kB gzip initial-JS budget      |
+| `make review`                  | Guardian Angel review of the PR (`gga run --pr-mode`)       |
 | `pnpm e2e:fullstack`           | Playwright against the running docker stack (real API)      |
 | `pnpm lighthouse`              | Mobile Lighthouse (>= 90) on the production build           |
 
@@ -51,6 +52,24 @@ support 7.x.
   fixtures) instead of `installApp`. Axe already covers the same pages in `e2e/smoke.spec.ts` and `e2e/dashboard.spec.ts`; Lighthouse only scores.
 - Tests that need the whole app use `renderWithApp` and `expectNoA11yViolations` from
   `tests/helpers.ts`; auth API mocks live in `tests/api-mock.ts`.
+
+## Review rules
+
+Guardian Angel (`gga run`, configured in `.gga`) checks staged files against this list. Each rule
+is checkable on a diff.
+
+- No `any`, no `@ts-ignore`, no `eslint-disable`: use `unknown` plus type guards.
+- Components use `<script setup lang="ts">`.
+- Components are presentational: no business logic and no API calls; data arrives by props from views (only `ToastRegion` reads a store).
+  Logic lives in composables, stores and `src/domain`.
+- Dates only through `src/lib/dates.ts`. No `new Date`, `Date.*` or dayjs import elsewhere.
+- Money is an integer number of cents, formatted with `Intl` (`useFormatters`); never floats.
+- Every user-facing string goes through a typed `MessageKey` and exists in both `it` and `en`.
+- Accessibility: every control has a label, focus is visible and managed in dialogs, targets are
+  at least 44px, colour is never the only signal.
+- No hard-coded colours (design tokens only), no dead or duplicated code, English-only code
+  and comments (Italian only in `locales/it.ts`).
+- Every change ships with a test (unit, and e2e when a user flow changes).
 
 ## Definition of done
 

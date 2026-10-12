@@ -42,4 +42,3 @@
 - feat(styles): add design tokens and self-hosted font
 - chore(tooling): add pnpm project, lint, test and build setup
 - chore: initialize frontend repository
-
