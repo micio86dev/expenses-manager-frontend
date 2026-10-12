@@ -3,7 +3,8 @@ withDefaults(
   defineProps<{
     id: string
     modelValue: string
-    type?: 'text' | 'email' | 'password'
+    type?: 'text' | 'email' | 'password' | 'date' | 'search'
+    max?: string | undefined
     autocomplete?: string | undefined
     required?: boolean
     minlength?: number | undefined
@@ -25,6 +26,7 @@ const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
     :autocomplete="autocomplete"
     :required="required"
     :minlength="minlength"
+    :max="max"
     :aria-invalid="invalid ? 'true' : undefined"
     :aria-describedby="describedby"
     @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"

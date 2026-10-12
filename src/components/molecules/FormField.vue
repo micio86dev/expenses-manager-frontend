@@ -6,7 +6,8 @@ const props = withDefaults(
   defineProps<{
     label: string
     modelValue: string
-    type?: 'text' | 'email' | 'password'
+    type?: 'text' | 'email' | 'password' | 'date' | 'search'
+    max?: string | undefined
     autocomplete?: string | undefined
     required?: boolean
     minlength?: number | undefined
@@ -38,6 +39,7 @@ const describedby = computed(() => {
       :autocomplete="autocomplete"
       :required="required"
       :minlength="minlength"
+      :max="max"
       :invalid="hasErrors"
       :describedby="describedby"
       @update:model-value="emit('update:modelValue', $event)"

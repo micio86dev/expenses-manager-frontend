@@ -86,9 +86,9 @@ describe('useExpenseFilters', () => {
     expect(router.currentRoute.value.query).toMatchObject({ from: '2026-10-01' })
   })
 
-  it('switches the period kind around today and keeps the category and search', async () => {
-    const { router, filters } = await setup('/expenses?category=c1&q=taxi')
-    await filters.setPeriodKind('week')
+  it('applies a standard period around today in one history entry, keeping the search', async () => {
+    const { router, filters } = await setup('/expenses?q=taxi', '/other')
+    await expect(filters.apply({ kind: 'week', categoryId: 'c1' })).resolves.toBe(true)
     expect(router.currentRoute.value.query).toEqual({
       period: 'week',
       from: '2026-10-12',
@@ -96,14 +96,26 @@ describe('useExpenseFilters', () => {
       category: 'c1',
       q: 'taxi',
     })
+    router.back()
+    await flushPromises()
+    expect(router.currentRoute.value.query).toEqual({ q: 'taxi' })
   })
 
   it('applies a custom range only when it is valid', async () => {
     const { router, filters } = await setup()
-    await expect(filters.setCustomRange('2026-09-10', '2026-09-01')).resolves.toBe(false)
-    await expect(filters.setCustomRange('2026-09-01', '2026-10-30')).resolves.toBe(false)
+    const invalid = [
+      { from: '2026-09-10', to: '2026-09-01' },
+      { from: '2026-09-01', to: '2026-10-30' },
+    ]
+    for (const range of invalid) {
+      await expect(filters.apply({ kind: 'custom', ...range, categoryId: null })).resolves.toBe(
+        false,
+      )
+    }
     expect(router.currentRoute.value.query.period).toBeUndefined()
-    await expect(filters.setCustomRange('2026-09-01', '2026-09-10')).resolves.toBe(true)
+    await expect(
+      filters.apply({ kind: 'custom', from: '2026-09-01', to: '2026-09-10', categoryId: null }),
+    ).resolves.toBe(true)
     expect(router.currentRoute.value.query).toMatchObject({
       period: 'custom',
       from: '2026-09-01',
@@ -111,12 +123,24 @@ describe('useExpenseFilters', () => {
     })
   })
 
-  it('sets and clears the category', async () => {
-    const { router, filters } = await setup()
+  it('sets and removes the category filter', async () => {
+    const { router, filters } = await setup('/expenses?period=week&from=2026-10-05&to=2026-10-11')
     await filters.setCategory('c2')
-    expect(router.currentRoute.value.query.category).toBe('c2')
+    expect(router.currentRoute.value.query).toMatchObject({ period: 'week', category: 'c2' })
     await filters.setCategory(null)
     expect(router.currentRoute.value.query.category).toBeUndefined()
+  })
+
+  it('clears the category and the search but keeps the period', async () => {
+    const { router, filters } = await setup(
+      '/expenses?period=week&from=2026-10-05&to=2026-10-11&category=c1&q=taxi',
+    )
+    await filters.clearFilters()
+    expect(router.currentRoute.value.query).toEqual({
+      period: 'week',
+      from: '2026-10-05',
+      to: '2026-10-11',
+    })
   })
 
   it('replaces the history entry while typing a search and drops it when cleared', async () => {
