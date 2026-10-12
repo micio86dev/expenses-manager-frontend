@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import { useTranslate } from '@/composables/useTranslate'
 import AppNav from '@/components/organisms/AppNav.vue'
 import SkipLink from '@/components/atoms/SkipLink.vue'
+import ToastRegion from '@/components/organisms/ToastRegion.vue'
 
 const t = useTranslate()
 const route = useRoute()
@@ -29,6 +30,7 @@ watch(
     <main id="main" ref="main" class="app-shell__main" tabindex="-1">
       <slot />
     </main>
+    <ToastRegion />
   </div>
 </template>
 

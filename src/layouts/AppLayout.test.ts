@@ -26,6 +26,11 @@ describe('AppLayout (rendered through the app root)', () => {
     expect(document.activeElement).toBe(wrapper.get('main').element)
   })
 
+  it('keeps a notifications region for rollback and error messages', async () => {
+    const { wrapper } = await renderWithApp(App, { route: '/settings', token: 'tok' })
+    expect(wrapper.find('section[aria-label="Notifications"]').exists()).toBe(true)
+  })
+
   it('has no axe violations', async () => {
     const { wrapper } = await renderWithApp(App, { route: '/', token: 'tok' })
     await expectNoA11yViolations(wrapper.element)

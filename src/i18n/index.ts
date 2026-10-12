@@ -37,6 +37,6 @@ export async function setLocale(code: LocaleCode): Promise<void> {
 }
 
 /** Key-checked translation for code outside components (stores, router, API errors). */
-export function translate(key: MessageKey): string {
-  return i18n.global.t(key)
+export function translate(key: MessageKey, params?: Record<string, string | number>): string {
+  return params === undefined ? i18n.global.t(key) : i18n.global.t(key, params)
 }

@@ -64,9 +64,32 @@ const en: Messages = {
   },
   categories: {
     title: 'Categories',
+    add: 'Add category',
+    showArchived: 'Show archived',
+    listLabel: 'Your categories',
     empty: {
       title: 'No categories',
       description: 'Categories help you understand where your money goes.',
+    },
+    badges: {
+      system: 'Default',
+      archived: 'Archived',
+    },
+    systemHint: 'Default categories cannot be changed.',
+    actions: {
+      edit: 'Edit {name}',
+      archive: 'Archive {name}',
+      unarchive: 'Restore {name}',
+      delete: 'Delete {name}',
+    },
+    sheet: {
+      createTitle: 'New category',
+      editTitle: 'Edit category',
+    },
+    confirmDelete: {
+      title: 'Delete this category?',
+      message: 'You are about to delete “{name}”. This cannot be undone.',
+      confirm: 'Delete category',
     },
     colors: {
       ocean: 'Ocean',
@@ -78,6 +101,20 @@ const en: Messages = {
       indigo: 'Indigo',
       rust: 'Rust',
     },
+    icons: {
+      cart: 'Shopping cart',
+      home: 'Home',
+      car: 'Car',
+      bolt: 'Utilities',
+      heart: 'Health',
+      plane: 'Travel',
+      coffee: 'Coffee',
+      gift: 'Gift',
+      book: 'Book',
+      briefcase: 'Work',
+      tag: 'Tag',
+      other: 'Other',
+    },
     notices: {
       createFailed: 'Could not create the category. Your change was undone.',
       updateFailed: 'Could not update the category. Your change was undone.',
@@ -87,6 +124,9 @@ const en: Messages = {
       deleteInUse: 'This category is used by expenses and cannot be deleted. Archive it instead.',
     },
     form: {
+      name: 'Name',
+      color: 'Colour',
+      icon: 'Icon',
       errors: {
         nameRequired: 'Enter a name.',
         nameTooLong: 'Use at most 60 characters.',
@@ -106,7 +146,22 @@ const en: Messages = {
       logout: 'Sign out',
     },
   },
+  common: {
+    edit: 'Edit',
+    archive: 'Archive',
+    restore: 'Restore',
+    cancel: 'Cancel',
+    save: 'Save',
+    retry: 'Try again',
+    close: 'Close',
+    delete: 'Delete',
+    dismiss: 'Dismiss',
+    offline: 'You are offline. Changes cannot be saved until you reconnect.',
+    notifications: 'Notifications',
+  },
   errors: {
+    loadFailed: 'We could not load your data.',
+    offline: 'You are offline. Reconnect and try again.',
     network: 'Cannot reach the server. Check your connection and try again.',
     unknown: 'Something went wrong. Try again in a moment.',
     sessionExpired: 'Your session has expired. Sign in again.',

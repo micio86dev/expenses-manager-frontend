@@ -63,9 +63,32 @@ const it = {
   },
   categories: {
     title: 'Categorie',
+    add: 'Aggiungi categoria',
+    showArchived: 'Mostra archiviate',
+    listLabel: 'Le tue categorie',
     empty: {
       title: 'Nessuna categoria',
       description: 'Le categorie ti aiutano a capire dove vanno i tuoi soldi.',
+    },
+    badges: {
+      system: 'Predefinita',
+      archived: 'Archiviata',
+    },
+    systemHint: 'Le categorie predefinite non si possono modificare.',
+    actions: {
+      edit: 'Modifica {name}',
+      archive: 'Archivia {name}',
+      unarchive: 'Ripristina {name}',
+      delete: 'Elimina {name}',
+    },
+    sheet: {
+      createTitle: 'Nuova categoria',
+      editTitle: 'Modifica categoria',
+    },
+    confirmDelete: {
+      title: 'Eliminare questa categoria?',
+      message: 'Stai per eliminare “{name}”. L’operazione non si può annullare.',
+      confirm: 'Elimina categoria',
     },
     colors: {
       ocean: 'Oceano',
@@ -77,6 +100,20 @@ const it = {
       indigo: 'Indaco',
       rust: 'Ruggine',
     },
+    icons: {
+      cart: 'Carrello',
+      home: 'Casa',
+      car: 'Auto',
+      bolt: 'Utenze',
+      heart: 'Salute',
+      plane: 'Viaggi',
+      coffee: 'Caffè',
+      gift: 'Regalo',
+      book: 'Libro',
+      briefcase: 'Lavoro',
+      tag: 'Etichetta',
+      other: 'Altro',
+    },
     notices: {
       createFailed: 'Impossibile creare la categoria. La modifica è stata annullata.',
       updateFailed: 'Impossibile aggiornare la categoria. La modifica è stata annullata.',
@@ -87,6 +124,9 @@ const it = {
         'Questa categoria è usata da alcune spese e non può essere eliminata. Archiviala invece.',
     },
     form: {
+      name: 'Nome',
+      color: 'Colore',
+      icon: 'Icona',
       errors: {
         nameRequired: 'Inserisci un nome.',
         nameTooLong: 'Usa al massimo 60 caratteri.',
@@ -106,7 +146,22 @@ const it = {
       logout: 'Esci',
     },
   },
+  common: {
+    edit: 'Modifica',
+    archive: 'Archivia',
+    restore: 'Ripristina',
+    cancel: 'Annulla',
+    save: 'Salva',
+    retry: 'Riprova',
+    close: 'Chiudi',
+    delete: 'Elimina',
+    dismiss: 'Ignora',
+    offline: 'Sei offline. Le modifiche non possono essere salvate finché non ti riconnetti.',
+    notifications: 'Notifiche',
+  },
   errors: {
+    loadFailed: 'Non siamo riusciti a caricare i tuoi dati.',
+    offline: 'Sei offline. Riconnettiti e riprova.',
     network: 'Impossibile raggiungere il server. Controlla la connessione e riprova.',
     unknown: 'Qualcosa è andato storto. Riprova tra poco.',
     sessionExpired: 'La sessione è scaduta. Accedi di nuovo.',

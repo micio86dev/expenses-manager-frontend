@@ -68,6 +68,11 @@ a {
   border: 0;
 }
 
+/* A modal dialog freezes the page behind it. */
+body:has([aria-modal='true']) {
+  overflow: hidden;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
