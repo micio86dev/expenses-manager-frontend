@@ -11,6 +11,9 @@ importers:
       '@fontsource-variable/schibsted-grotesk':
         specifier: ^5.3.0
         version: 5.3.0
+      chart.js:
+        specifier: ^4.5.1
+        version: 4.5.1
       dayjs:
         specifier: ^1.11.23
         version: 1.11.23
@@ -20,6 +23,9 @@ importers:
       vue:
         specifier: ^3.5.43
         version: 3.5.43(typescript@6.0.3)
+      vue-chartjs:
+        specifier: ^5.3.4
+        version: 5.3.4(chart.js@4.5.1)(vue@3.5.43(typescript@6.0.3))
       vue-i18n:
         specifier: ^11.4.14
         version: 11.4.14(vue@3.5.43(typescript@6.0.3))
@@ -251,6 +257,9 @@ packages:
 
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
+
+  '@kurkle/color@0.3.4':
+    resolution: {integrity: sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==}
 
   '@one-ini/wasm@0.2.1':
     resolution: {integrity: sha512-TUqERXGNTifZ9y2g3wPxQrw3HpHv/02DsW3D90T9x0hhonrL1ZqpSmNrU2XkoIq0fP1N6gZfVQzy2Fw1ZvGBNg==}
@@ -663,6 +672,10 @@ packages:
 
   change-case@5.4.4:
     resolution: {integrity: sha512-HRQyTk2/YPEkt9TnUPbOpr64Uw3KOicFWPVBb+xiHvd6eBx/qPr9xqfBFDT8P2vWsvvz4jbEkfDe71W3VyNu2w==}
+
+  chart.js@4.5.1:
+    resolution: {integrity: sha512-GIjfiT9dbmHRiYi6Nl2yFCq7kkwdkp1W/lp2J99rX0yo9tgJGn3lKQATztIjb5tVtevcBtIdICNWqlq5+E8/Pw==}
+    engines: {pnpm: '>=8'}
 
   chokidar@5.0.0:
     resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
@@ -1428,6 +1441,12 @@ packages:
   vscode-uri@3.2.0:
     resolution: {integrity: sha512-m2gXo3bn0G1kT9InzMf07fTbqMbGtyckj3bH5ktLO+1Ssv+yiATZ4dhwaQv9UZWxJh6E9IFGnQyjgWVDWVBDrg==}
 
+  vue-chartjs@5.3.4:
+    resolution: {integrity: sha512-x3Fqob8RQvrTdssfi9ecsCzEkFOd8JPmNwSkSQzdfKj/uBsRJs/Y88cZcZIEcPsTVfMGwMo4MOoihoDG2DoE/g==}
+    peerDependencies:
+      chart.js: ^4.1.1
+      vue: ^3.0.0-0 || ^2.7.0
+
   vue-component-type-helpers@3.3.13:
     resolution: {integrity: sha512-02KCxSmKDhIITjKyJ4QT5csP6L0WoRborLqY/34a40+S9uvMvdNgMV0yVjO3p2Gkz3ZoPmFz/0JsGHacwJYTxw==}
 
@@ -1672,6 +1691,8 @@ snapshots:
       keyv: 5.6.0
 
   '@keyv/serialize@1.1.1': {}
+
+  '@kurkle/color@0.3.4': {}
 
   '@one-ini/wasm@0.2.1': {}
 
@@ -2097,6 +2118,10 @@ snapshots:
   chai@6.3.0: {}
 
   change-case@5.4.4: {}
+
+  chart.js@4.5.1:
+    dependencies:
+      '@kurkle/color': 0.3.4
 
   chokidar@5.0.0:
     dependencies:
@@ -2732,6 +2757,11 @@ snapshots:
       - msw
 
   vscode-uri@3.2.0: {}
+
+  vue-chartjs@5.3.4(chart.js@4.5.1)(vue@3.5.43(typescript@6.0.3)):
+    dependencies:
+      chart.js: 4.5.1
+      vue: 3.5.43(typescript@6.0.3)
 
   vue-component-type-helpers@3.3.13: {}
 
