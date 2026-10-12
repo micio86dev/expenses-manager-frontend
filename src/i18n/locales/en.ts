@@ -35,9 +35,55 @@ const en: Messages = {
   },
   dashboard: {
     title: 'Dashboard',
+    currency: 'Currency',
+    range: {
+      apply: 'Show range',
+    },
     empty: {
-      title: 'No data yet',
-      description: 'Once you record your first expenses, you will see how you spend here.',
+      title: 'No expenses in this period',
+      description: 'Add an expense or pick another period to see how you spend.',
+    },
+    kpi: {
+      label: 'Key figures',
+      total: 'Total spent',
+      delta: 'Change',
+      average: 'Daily average',
+      averageOver: 'Over {days} days',
+      count: 'Expenses',
+      deltaUp: '+{percent}% vs previous period',
+      deltaDown: '-{percent}% vs previous period',
+      deltaFlat: 'No change vs previous period',
+      deltaNone: 'No previous spending',
+    },
+    spend: {
+      title: 'Spending over time',
+      summary: 'Spending over time: {total} in total, highest {peak} on {date}.',
+      summaryNone: 'Spending over time: nothing was spent in this period.',
+      amount: 'Amount',
+      bucket: {
+        day: 'Day',
+        week: 'Week starting',
+        month: 'Month',
+      },
+    },
+    categories: {
+      title: 'Spending by category',
+      summary: 'Spending by category: {name} is the largest with {percent}% of {total}.',
+      summaryNone: 'Spending by category: nothing was spent in this period.',
+      listLabel: 'Categories ranked by spending',
+      name: 'Category',
+      amount: 'Amount',
+      share: 'Share',
+    },
+    comparison: {
+      title: 'Compared with the previous period',
+      summary: 'Compared with the previous period: {current} now against {previous} before.',
+      current: 'This period',
+      previous: 'Previous period',
+    },
+    top: {
+      title: 'Top expenses',
+      listLabel: 'Your largest expenses in this period',
     },
   },
   expenses: {
@@ -199,6 +245,10 @@ const en: Messages = {
       title: 'Account',
       logout: 'Sign out',
     },
+  },
+  format: {
+    pair: '{first} · {second}',
+    range: '{from} – {to}',
   },
   common: {
     edit: 'Edit',

@@ -16,3 +16,7 @@ export type CategoryIcon = Schemas['CategoryIcon']
 export type Expense = Camelize<Schemas['Expense']>
 export type ExpenseInput = Camelize<Schemas['ExpenseInput']>
 export type PaginationMeta = Camelize<Schemas['PaginationMeta']>
+export type StatsSummary = Camelize<Schemas['StatsSummaryResource']['data']>
+export type CategoryStat = Camelize<Schemas['CategoryStat']>
+export type TimeseriesBucket = Camelize<Schemas['TimeseriesBucket']>
+export type Granularity = components['parameters']['Granularity']

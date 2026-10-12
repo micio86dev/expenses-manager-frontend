@@ -3,12 +3,17 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import { expectNoA11yViolations, renderWithApp } from '../../tests/helpers'
 import App from '@/App.vue'
-import { categoriesApi, expensesApi } from '../../tests/api-mock'
+import { categoriesApi, expensesApi, statsApi } from '../../tests/api-mock'
 
 vi.mock('@/api', async () => (await import('../../tests/api-mock')).apiMock)
 
 describe('AppLayout (rendered through the app root)', () => {
   beforeEach(() => {
+    const none = { notModified: false, data: [], etag: null }
+    statsApi.summary.mockResolvedValue({ ...none, data: { count: 0, previousPeriod: {} } })
+    statsApi.byCategory.mockResolvedValue(none)
+    statsApi.timeseries.mockResolvedValue(none)
+    statsApi.topExpenses.mockResolvedValue(none)
     categoriesApi.list.mockResolvedValue([])
     expensesApi.list.mockResolvedValue({
       data: [],

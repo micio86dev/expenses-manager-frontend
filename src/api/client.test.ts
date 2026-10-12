@@ -150,4 +150,44 @@ describe('api client', () => {
     fetchMock.mockRejectedValue(abort)
     await expect(client.request('GET', '/expenses')).rejects.toBe(abort)
   })
+  describe('conditional requests', () => {
+    it('sends If-None-Match and returns the data with its ETag', async () => {
+      const { client, fetchMock } = setup()
+      fetchMock.mockResolvedValue(
+        jsonResponse({ data: { total_cents: 5 } }, { headers: { ETag: '"v2"' } }),
+      )
+      const result = await client.conditional('GET', '/stats/summary', { etag: '"v1"' })
+      expect(lastCall(fetchMock).headers.get('If-None-Match')).toBe('"v1"')
+      expect(result).toEqual({
+        notModified: false,
+        data: { data: { totalCents: 5 } },
+        etag: '"v2"',
+      })
+    })
+
+    it('omits If-None-Match without a cached ETag and reports a missing ETag as null', async () => {
+      const { client, fetchMock } = setup()
+      fetchMock.mockResolvedValue(jsonResponse({ data: [] }))
+      const result = await client.conditional('GET', '/stats/summary')
+      expect(lastCall(fetchMock).headers.has('If-None-Match')).toBe(false)
+      expect(result).toEqual({ notModified: false, data: { data: [] }, etag: null })
+    })
+
+    it('treats 304 as "use the cached copy"', async () => {
+      const { client, fetchMock, onUnauthorized } = setup()
+      fetchMock.mockResolvedValue(new Response(null, { status: 304 }))
+      await expect(client.conditional('GET', '/stats/summary', { etag: '"v1"' })).resolves.toEqual({
+        notModified: true,
+      })
+      expect(onUnauthorized).not.toHaveBeenCalled()
+    })
+
+    it('still throws for failures', async () => {
+      const { client, fetchMock } = setup()
+      fetchMock.mockResolvedValue(jsonResponse({ title: 'Too many', status: 429 }, { status: 429 }))
+      await expect(client.conditional('GET', '/stats/summary')).rejects.toMatchObject({
+        status: 429,
+      })
+    })
+  })
 })

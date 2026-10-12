@@ -293,4 +293,27 @@ describe('expenses store', () => {
       expect(store.total).toBe(2)
     })
   })
+
+  describe('revision', () => {
+    it('counts the changes the server confirmed, so other screens can refresh', async () => {
+      const store = await loadedStore()
+      expect(store.revision).toBe(0)
+      expensesApi.create.mockResolvedValue(makeExpense({ id: 'e9', ...input }))
+      await store.create(input)
+      expect(store.revision).toBe(1)
+      expensesApi.update.mockResolvedValue(makeExpense({ id: 'e1' }))
+      await store.update('e1', input)
+      expect(store.revision).toBe(2)
+      expensesApi.remove.mockResolvedValue(undefined)
+      await store.remove('e2')
+      expect(store.revision).toBe(3)
+    })
+
+    it('does not count a change that was rolled back', async () => {
+      const store = await loadedStore()
+      expensesApi.create.mockRejectedValue(failure)
+      await store.create(input)
+      expect(store.revision).toBe(0)
+    })
+  })
 })

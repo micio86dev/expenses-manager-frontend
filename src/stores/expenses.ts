@@ -31,6 +31,9 @@ export const useExpensesStore = defineStore('expenses', () => {
   const status = ref<'idle' | 'loading' | 'ready' | 'error'>('idle')
   const error = ref<ApiError | null>(null)
   const loadingMore = ref(false)
+  // Counts the changes the server confirmed, so screens showing figures derived from the
+  // expenses (the dashboard) know when to refresh.
+  const revision = ref(0)
   const filters = ref<ExpenseFilters | null>(null)
   // Bumped by every load so an answer for outdated filters is ignored when it finally arrives.
   let generation = 0
@@ -201,8 +204,20 @@ export const useExpensesStore = defineStore('expenses', () => {
     )
   }
 
+  /** Wraps a mutation so that a confirmed change bumps `revision`. */
+  function confirmed<Args extends unknown[], T>(
+    mutate: (...args: Args) => Promise<MutationResult<T>>,
+  ): (...args: Args) => Promise<MutationResult<T>> {
+    return async (...args) => {
+      const result = await mutate(...args)
+      if (result.ok) revision.value += 1
+      return result
+    }
+  }
+
   return {
     items,
+    revision,
     total,
     status,
     error,
@@ -214,8 +229,8 @@ export const useExpensesStore = defineStore('expenses', () => {
     load,
     reload,
     loadMore,
-    create,
-    update,
-    remove,
+    create: confirmed(create),
+    update: confirmed(update),
+    remove: confirmed(remove),
   }
 })
