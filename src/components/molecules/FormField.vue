@@ -2,11 +2,14 @@
 import { computed, useId } from 'vue'
 import BaseInput from '../atoms/BaseInput.vue'
 
+defineOptions({ inheritAttrs: false })
+
 const props = withDefaults(
   defineProps<{
     label: string
     modelValue: string
-    type?: 'text' | 'email' | 'password'
+    type?: 'text' | 'email' | 'password' | 'date' | 'search'
+    max?: string | undefined
     autocomplete?: string | undefined
     required?: boolean
     minlength?: number | undefined
@@ -32,12 +35,14 @@ const describedby = computed(() => {
   <div class="form-field">
     <label class="form-field__label" :for="id">{{ label }}</label>
     <BaseInput
+      v-bind="$attrs"
       :id="id"
       :model-value="modelValue"
       :type="type"
       :autocomplete="autocomplete"
       :required="required"
       :minlength="minlength"
+      :max="max"
       :invalid="hasErrors"
       :describedby="describedby"
       @update:model-value="emit('update:modelValue', $event)"

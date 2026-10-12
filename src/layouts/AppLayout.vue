@@ -4,9 +4,14 @@ import { useRoute } from 'vue-router'
 import { useTranslate } from '@/composables/useTranslate'
 import AppNav from '@/components/organisms/AppNav.vue'
 import SkipLink from '@/components/atoms/SkipLink.vue'
+import ToastRegion from '@/components/organisms/ToastRegion.vue'
+import BaseButton from '@/components/atoms/BaseButton.vue'
+import { useExpenseSheetStore } from '@/stores/expenseSheet'
+import ExpenseSheetHost from '@/views/ExpenseSheetHost.vue'
 
 const t = useTranslate()
 const route = useRoute()
+const sheet = useExpenseSheetStore()
 const main = useTemplateRef<HTMLElement>('main')
 
 // A single-page app does not reload, so move focus to the content after each navigation.
@@ -24,11 +29,28 @@ watch(
     <SkipLink />
     <header class="app-shell__header">
       <span class="app-shell__brand">{{ t('app.name') }}</span>
+      <BaseButton class="app-shell__add" @click="sheet.openCreate()">
+        {{ t('expenses.add') }}
+      </BaseButton>
     </header>
     <AppNav class="app-shell__nav" />
     <main id="main" ref="main" class="app-shell__main" tabindex="-1">
       <slot />
     </main>
+    <button type="button" class="fab" @click="sheet.openCreate()">
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+        <path
+          d="M12 5v14M5 12h14"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+      </svg>
+      <span>{{ t('expenses.add') }}</span>
+    </button>
+    <ExpenseSheetHost />
+    <ToastRegion />
   </div>
 </template>
 
@@ -49,6 +71,38 @@ watch(
 
 .app-shell__brand {
   font-weight: var(--weight-bold);
+}
+
+.app-shell__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+/* On mobile the floating button adds expenses; the header button takes over from 52rem. */
+.app-shell__add {
+  display: none;
+}
+
+.fab {
+  position: fixed;
+  z-index: 6;
+  right: calc(var(--space-4) + env(safe-area-inset-right));
+  bottom: calc(var(--tabbar-height) + var(--space-4) + env(safe-area-inset-bottom));
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 3.5rem;
+  padding: 0 var(--space-5) 0 var(--space-4);
+  border: 0;
+  border-radius: 1.75rem;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  box-shadow: 0 0.5rem 1.25rem var(--color-scrim);
+  font: inherit;
+  font-weight: var(--weight-bold);
+  cursor: pointer;
 }
 
 .app-shell__main {
@@ -76,7 +130,17 @@ watch(
     grid-template-rows: auto 1fr;
   }
 
+  .app-shell__add {
+    display: inline-flex;
+  }
+
+  .fab {
+    display: none;
+  }
+
   .app-shell__header {
+    flex-direction: column;
+    align-items: stretch;
     grid-column: 1;
     padding-inline: calc(var(--space-4) + env(safe-area-inset-left)) var(--space-4);
     border-bottom: 0;

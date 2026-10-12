@@ -3,6 +3,7 @@ import {
   activateDateLocale,
   addDays,
   addMonths,
+  diffDays,
   endOfIsoWeek,
   endOfMonth,
   formatDate,
@@ -54,5 +55,12 @@ describe('dates facade', () => {
     expect(formatDate('2026-10-12', 'ddd D MMM')).not.toBe('Mon 12 Oct')
     await activateDateLocale('en')
     expect(formatDate('2026-10-12', 'ddd D MMM')).toBe('Mon 12 Oct')
+  })
+
+  it('counts the days between two calendar dates', () => {
+    expect(diffDays('2026-10-01', '2026-10-12')).toBe(11)
+    expect(diffDays('2026-10-12', '2026-10-12')).toBe(0)
+    expect(diffDays('2026-10-12', '2026-10-01')).toBe(-11)
+    expect(diffDays('2026-03-28', '2026-03-30')).toBe(2)
   })
 })

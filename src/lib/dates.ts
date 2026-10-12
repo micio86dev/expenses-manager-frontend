@@ -62,6 +62,11 @@ export function addMonths(date: IsoDate, amount: number): IsoDate {
   return dayjs(date).add(amount, 'month').format(ISO_FORMAT)
 }
 
+/** Whole days from `from` to `to` (negative when `to` is earlier). */
+export function diffDays(from: IsoDate, to: IsoDate): number {
+  return dayjs(to).diff(dayjs(from), 'day')
+}
+
 /** Formats with a dayjs pattern in the active locale, e.g. `ddd D MMM`. */
 export function formatDate(date: IsoDate, pattern: string): string {
   return dayjs(date).format(pattern)

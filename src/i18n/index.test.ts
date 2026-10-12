@@ -48,5 +48,6 @@ describe('i18n service', () => {
   it('translates keys outside components', async () => {
     await setLocale('en')
     expect(translate('errors.network')).toContain('Cannot reach the server')
+    expect(translate('categories.actions.edit', { name: 'Pets' })).toBe('Edit Pets')
   })
 })
