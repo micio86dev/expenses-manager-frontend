@@ -45,6 +45,12 @@ const it = {
       title: 'Nessuna spesa registrata',
       description: 'Le spese che aggiungerai compariranno qui, raggruppate per giorno.',
     },
+    notices: {
+      createFailed: 'Impossibile salvare la spesa. La modifica è stata annullata.',
+      updateFailed: 'Impossibile aggiornare la spesa. La modifica è stata annullata.',
+      deleteFailed: 'Impossibile eliminare la spesa. La modifica è stata annullata.',
+      loadMoreFailed: 'Impossibile caricare altre spese.',
+    },
     form: {
       errors: {
         amountInvalid: 'Inserisci un importo maggiore di zero con al massimo due decimali.',
@@ -70,6 +76,15 @@ const it = {
       plum: 'Prugna',
       indigo: 'Indaco',
       rust: 'Ruggine',
+    },
+    notices: {
+      createFailed: 'Impossibile creare la categoria. La modifica è stata annullata.',
+      updateFailed: 'Impossibile aggiornare la categoria. La modifica è stata annullata.',
+      archiveFailed: 'Impossibile archiviare la categoria. La modifica è stata annullata.',
+      unarchiveFailed: 'Impossibile ripristinare la categoria. La modifica è stata annullata.',
+      deleteFailed: 'Impossibile eliminare la categoria. La modifica è stata annullata.',
+      deleteInUse:
+        'Questa categoria è usata da alcune spese e non può essere eliminata. Archiviala invece.',
     },
     form: {
       errors: {

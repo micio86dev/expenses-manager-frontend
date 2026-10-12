@@ -46,6 +46,12 @@ const en: Messages = {
       title: 'No expenses recorded',
       description: 'The expenses you add will show up here, grouped by day.',
     },
+    notices: {
+      createFailed: 'Could not save the expense. Your change was undone.',
+      updateFailed: 'Could not update the expense. Your change was undone.',
+      deleteFailed: 'Could not delete the expense. Your change was undone.',
+      loadMoreFailed: 'Could not load more expenses.',
+    },
     form: {
       errors: {
         amountInvalid: 'Enter an amount above zero with at most two decimals.',
@@ -71,6 +77,14 @@ const en: Messages = {
       plum: 'Plum',
       indigo: 'Indigo',
       rust: 'Rust',
+    },
+    notices: {
+      createFailed: 'Could not create the category. Your change was undone.',
+      updateFailed: 'Could not update the category. Your change was undone.',
+      archiveFailed: 'Could not archive the category. Your change was undone.',
+      unarchiveFailed: 'Could not restore the category. Your change was undone.',
+      deleteFailed: 'Could not delete the category. Your change was undone.',
+      deleteInUse: 'This category is used by expenses and cannot be deleted. Archive it instead.',
     },
     form: {
       errors: {
