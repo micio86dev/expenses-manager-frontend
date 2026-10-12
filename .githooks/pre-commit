@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Runs lint and typecheck when staged changes touch sources, tests or configuration.
+set -euo pipefail
+
+staged="$(git diff --cached --name-only --diff-filter=ACMR)"
+pattern='^(src/|tests/|e2e/|scripts/|[^/]+\.(ts|js|mjs|json|vue|css)$|\.prettierrc|\.env\.example)'
+
+if echo "$staged" | grep -Eq "$pattern"; then
+    make lint
+    make typecheck
+fi
