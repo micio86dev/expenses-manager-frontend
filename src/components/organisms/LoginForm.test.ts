@@ -17,6 +17,17 @@ describe('LoginForm', () => {
     ])
   })
 
+  it('blocks submit and asks for the password when it is empty', async () => {
+    const { wrapper } = await renderWithApp(LoginForm, {
+      props: { submitting: false, errorMessage: null, fieldErrors: {} },
+    })
+    await wrapper.get('input[type=email]').setValue('ada@example.com')
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    expect(wrapper.emitted('submit')).toBeUndefined()
+    expect(wrapper.text()).toContain('Enter your password.')
+  })
+
   it('shows the general error and field errors', async () => {
     const { wrapper } = await renderWithApp(LoginForm, {
       props: {

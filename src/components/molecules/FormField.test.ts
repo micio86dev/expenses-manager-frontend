@@ -60,4 +60,19 @@ describe('FormField', () => {
     expect(input.attributes('required')).toBeDefined()
     expect(input.attributes('minlength')).toBe('3')
   })
+
+  it('renders a textarea when multiline and keeps the label and errors linked', async () => {
+    const wrapper = mount(FormField, {
+      props: { label: 'Description', modelValue: 'Lunch', multiline: true, errors: ['Too long'] },
+    })
+    expect(wrapper.find('input').exists()).toBe(false)
+    const textarea = wrapper.get('textarea')
+    expect(wrapper.get('label').attributes('for')).toBe(textarea.attributes('id'))
+    expect(textarea.attributes('aria-invalid')).toBe('true')
+    expect(textarea.attributes('aria-describedby')).toContain(
+      wrapper.get('[data-error]').attributes('id') ?? '',
+    )
+    await textarea.setValue('Lunch with Sam')
+    expect(wrapper.emitted('update:modelValue')).toEqual([['Lunch with Sam']])
+  })
 })

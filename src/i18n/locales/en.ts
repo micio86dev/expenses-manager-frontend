@@ -17,6 +17,15 @@ const en: Messages = {
     email: 'Email',
     password: 'Password',
     name: 'Name',
+    errors: {
+      emailInvalid: 'Enter a valid email address.',
+      emailTooLong: 'Use at most 255 characters.',
+      passwordRequired: 'Enter your password.',
+      passwordTooShort: 'Use at least 8 characters.',
+      passwordTooLong: 'Use at most 255 characters.',
+      nameRequired: 'Enter your name.',
+      nameTooLong: 'Use at most 120 characters.',
+    },
     login: {
       title: 'Sign in',
       subtitle: 'Welcome back. Sign in to see your expenses.',
