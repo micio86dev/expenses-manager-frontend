@@ -26,7 +26,10 @@ export function runSchema<Value, Field extends string>(
     if (!isMessageKey(messageKeys, issue.message)) {
       throw new Error(`Validation rule on "${field}" has no translation key: ${issue.message}`)
     }
-    if (field !== '' && errors[field] === undefined) errors[field] = issue.message
+    if (field === '') {
+      throw new Error(`Validation rule belongs to no field: ${issue.message}`)
+    }
+    errors[field] ??= issue.message
   }
   return { ok: false, errors }
 }
