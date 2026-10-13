@@ -14,6 +14,9 @@ describe('RegisterView', () => {
 
   it('registers with the current locale and goes to the dashboard', async () => {
     authApi.register.mockResolvedValue({ token: 'tok', user })
+    // The dashboard route is lazy. Load its module before the submit, so the navigation after a
+    // successful registration never waits on a cold import (that wait is what made this test flaky).
+    await import('@/pages/DashboardPage.vue')
     const { wrapper, router } = await renderWithApp(RegisterView, { route: '/register' })
     expect(wrapper.get('h1').text()).toBe('Create an account')
     expect(wrapper.get('a[href="/login"]').text()).toBe('Sign in')
@@ -28,13 +31,9 @@ describe('RegisterView', () => {
       password: 'password1',
       locale: 'en',
     })
-    // The dashboard route is lazy: its first import can outlast the default one-second wait under load.
-    await vi.waitFor(
-      () => {
-        expect(router.currentRoute.value.name).toBe('dashboard')
-      },
-      { timeout: 5000 },
-    )
+    await vi.waitFor(() => {
+      expect(router.currentRoute.value.name).toBe('dashboard')
+    })
   })
 
   it('shows the server problem and stays on the page', async () => {

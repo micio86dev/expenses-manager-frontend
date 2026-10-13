@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.2.2] - 2026-10-13
+
+- test(register): preload the dashboard route so the post-submit navigation is deterministic
+
 ## [0.2.1] - 2026-10-13
 
 - test(e2e): expose the ETag header from the mock API like the backend does
