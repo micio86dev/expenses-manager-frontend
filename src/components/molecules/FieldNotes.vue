@@ -10,7 +10,7 @@ defineProps<{
 <template>
   <p v-if="hint !== undefined" :id="hintId" class="field-notes__hint" data-hint>{{ hint }}</p>
   <p v-if="errors.length > 0" :id="errorId" class="field-notes__error" data-error>
-    <span v-for="message in errors" :key="message">{{ message }}</span>
+    <span v-for="(message, index) in errors" :key="index">{{ message }}</span>
   </p>
 </template>
 

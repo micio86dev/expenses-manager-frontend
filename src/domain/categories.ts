@@ -1,6 +1,8 @@
 // Category palette, form validation, visibility and the "recent categories" ordering.
+import { z } from 'zod'
 import type { Category, CategoryIcon, CategoryInput } from '@/api/types'
 import type { MessageKey } from '@/i18n/keys'
+import { type FormResult, runSchema } from './validation'
 
 /**
  * The fixed colour palette. The hex values mirror the `--category-*` design tokens (a test keeps
@@ -41,28 +43,46 @@ export interface CategoryFormValues {
   icon: string
 }
 
-export type CategoryFormErrors = Partial<Record<keyof CategoryFormValues, MessageKey>>
+/** Every message the category form can show. Typed against MessageKey, so a typo fails to compile. */
+export const CATEGORY_MESSAGES = {
+  nameRequired: 'categories.form.errors.nameRequired',
+  nameTooLong: 'categories.form.errors.nameTooLong',
+  colorInvalid: 'categories.form.errors.colorInvalid',
+  iconInvalid: 'categories.form.errors.iconInvalid',
+} as const satisfies Record<string, MessageKey>
 
-export type CategoryFormResult =
-  { ok: true; value: CategoryInput } | { ok: false; errors: CategoryFormErrors }
+const CATEGORY_KEYS: ReadonlySet<MessageKey> = new Set<MessageKey>(Object.values(CATEGORY_MESSAGES))
 
-function isIcon(value: string): value is CategoryIcon {
-  return (CATEGORY_ICONS as readonly string[]).includes(value)
-}
+/** Colours are compared case-insensitively and stored as the palette's canonical hex. */
+const categorySchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, { error: CATEGORY_MESSAGES.nameRequired })
+    .max(MAX_CATEGORY_NAME_LENGTH, { error: CATEGORY_MESSAGES.nameTooLong }),
+  color: z.string().transform((value, ctx) => {
+    const palette = CATEGORY_COLORS.find((color) => color.hex === value.toUpperCase())
+    if (palette === undefined) {
+      ctx.addIssue({ code: 'custom', message: CATEGORY_MESSAGES.colorInvalid, input: value })
+      return z.NEVER
+    }
+    return palette.hex
+  }),
+  icon: z.enum(CATEGORY_ICONS, { error: CATEGORY_MESSAGES.iconInvalid }),
+})
+
+export type CategoryField = keyof CategoryFormValues
+export type CategoryFormErrors = Partial<Record<CategoryField, MessageKey>>
+export type CategoryFormResult = FormResult<CategoryInput, CategoryField>
 
 export function validateCategoryForm(values: CategoryFormValues): CategoryFormResult {
-  const name = values.name.trim()
-  const palette = CATEGORY_COLORS.find((color) => color.hex === values.color.toUpperCase())
-  const errors: CategoryFormErrors = {}
-  if (name === '') errors.name = 'categories.form.errors.nameRequired'
-  else if (name.length > MAX_CATEGORY_NAME_LENGTH)
-    errors.name = 'categories.form.errors.nameTooLong'
-  if (palette === undefined) errors.color = 'categories.form.errors.colorInvalid'
-  if (!isIcon(values.icon)) errors.icon = 'categories.form.errors.iconInvalid'
-  if (palette === undefined || !isIcon(values.icon) || errors.name !== undefined) {
-    return { ok: false, errors }
-  }
-  return { ok: true, value: { name, color: palette.hex, icon: values.icon } }
+  const result = runSchema<z.output<typeof categorySchema>, CategoryField>(
+    categorySchema,
+    values,
+    CATEGORY_KEYS,
+  )
+  if (!result.ok) return result
+  return { ok: true, value: result.value }
 }
 
 export function visibleCategories(

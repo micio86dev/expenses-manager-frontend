@@ -51,7 +51,21 @@ describe('validateExpenseForm', () => {
     })
   })
 
+  it('applies the currency minor units to the amount', () => {
+    expect(validateExpenseForm({ ...valid, currency: 'JPY', amount: '12' })).toMatchObject({
+      ok: true,
+      value: { amountCents: 12, currency: 'JPY' },
+    })
+    expect(validateExpenseForm({ ...valid, currency: 'JPY', amount: '12,5' })).toEqual({
+      ok: false,
+      errors: { amount: 'expenses.form.errors.amountInvalid' },
+    })
+  })
+
   it('rejects amounts above the contract maximum', () => {
-    expect(validateExpenseForm({ ...valid, amount: '1000000000' }).ok).toBe(false)
+    expect(validateExpenseForm({ ...valid, amount: '1000000000' })).toEqual({
+      ok: false,
+      errors: { amount: 'expenses.form.errors.amountInvalid' },
+    })
   })
 })
