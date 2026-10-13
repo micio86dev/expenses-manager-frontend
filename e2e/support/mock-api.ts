@@ -191,10 +191,15 @@ export async function installApp(page: Page, options: Options = {}): Promise<Moc
         await route.fulfill(problem(422, { errors: { from: ['Required.'] } }))
         return
       }
+      // Cross-origin: the browser only lets the SPA read ETag if the API exposes it, as the backend does.
       const etag = etagOf(stats)
+      const exposed = {
+        ETag: etag,
+        'Access-Control-Expose-Headers': 'ETag, X-Request-Id, Retry-After',
+      }
       await (ifNoneMatch === etag
-        ? route.fulfill({ status: 304, headers: { ETag: etag } })
-        : route.fulfill({ status: 200, json: stats, headers: { ETag: etag } }))
+        ? route.fulfill({ status: 304, headers: exposed })
+        : route.fulfill({ status: 200, json: stats, headers: exposed }))
       return
     }
 
