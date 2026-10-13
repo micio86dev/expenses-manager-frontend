@@ -10,3 +10,6 @@ test-results
 *.tsbuildinfo
 .pnpm-store
 lighthouse-report
+
+# Gentle AI tooling cache (generated per machine)
+.atl/
