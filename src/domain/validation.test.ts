@@ -22,4 +22,11 @@ describe('runSchema', () => {
     const bare = z.object({ name: z.string().min(1) })
     expect(() => runSchema(bare, { name: '' }, KEYS)).toThrow('has no translation key')
   })
+
+  it('throws for a failed rule that belongs to no field, since no field could show it', () => {
+    const whole = z
+      .object({ name: z.string() })
+      .refine(() => false, { error: 'auth.errors.nameRequired' })
+    expect(() => runSchema(whole, { name: 'Ada' }, KEYS)).toThrow('belongs to no field')
+  })
 })
