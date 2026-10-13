@@ -29,7 +29,7 @@ async function render(recent: string[] = []) {
 async function fillAndSubmit(wrapper: Awaited<ReturnType<typeof render>>['wrapper']) {
   await wrapper.get('input[inputmode=decimal]').setValue('12,50')
   await wrapper.get('select[data-category]').setValue('c1')
-  await wrapper.get('input[data-description]').setValue('Lunch')
+  await wrapper.get('textarea[data-description]').setValue('Lunch')
   await wrapper.get('form').trigger('submit')
   await flushPromises()
 }
@@ -129,7 +129,7 @@ describe('ExpenseSheetHost', () => {
     expect(sheet.isOpen).toBe(true)
     expect(wrapper.get<HTMLInputElement>('input[inputmode=decimal]').element.value).toBe('12.50')
     expect(wrapper.get('[data-error]').text()).toBe('The amount is too large.')
-    expect(wrapper.get<HTMLInputElement>('input[data-description]').element.value).toBe('Lunch')
+    expect(wrapper.get<HTMLInputElement>('textarea[data-description]').element.value).toBe('Lunch')
   })
 
   it('edits an expense, prefilled with its formatted amount', async () => {
@@ -142,7 +142,7 @@ describe('ExpenseSheetHost', () => {
     expect(wrapper.get<HTMLSelectElement>('select[data-currency]').element.value).toBe('USD')
     const options = wrapper.findAll('select[data-category] option').map((o) => o.text())
     expect(options).toContain('Old hobby')
-    await wrapper.get('input[data-description]').setValue('Dinner')
+    await wrapper.get('textarea[data-description]').setValue('Dinner')
     await wrapper.get('form').trigger('submit')
     await flushPromises()
     expect(expensesApi.update).toHaveBeenCalledWith('e1', {

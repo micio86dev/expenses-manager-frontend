@@ -56,6 +56,12 @@ a {
   outline-offset: 2px;
 }
 
+/* The vertical rhythm of a form: one stacked column, a fixed gap between fields and actions. */
+.form-stack {
+  display: grid;
+  gap: var(--space-4);
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

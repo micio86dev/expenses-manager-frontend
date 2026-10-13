@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
 import BaseInput from '../atoms/BaseInput.vue'
+import BaseTextarea from '../atoms/BaseTextarea.vue'
+import FieldNotes from './FieldNotes.vue'
 
 defineOptions({ inheritAttrs: false })
 
@@ -13,10 +15,11 @@ const props = withDefaults(
     autocomplete?: string | undefined
     required?: boolean
     minlength?: number | undefined
+    multiline?: boolean
     hint?: string
     errors?: string[]
   }>(),
-  { type: 'text', required: false, errors: () => [] },
+  { type: 'text', required: false, multiline: false, errors: () => [] },
 )
 
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
@@ -34,7 +37,17 @@ const describedby = computed(() => {
 <template>
   <div class="form-field">
     <label class="form-field__label" :for="id">{{ label }}</label>
+    <BaseTextarea
+      v-if="multiline"
+      v-bind="$attrs"
+      :id="id"
+      :model-value="modelValue"
+      :invalid="hasErrors"
+      :describedby="describedby"
+      @update:model-value="emit('update:modelValue', $event)"
+    />
     <BaseInput
+      v-else
       v-bind="$attrs"
       :id="id"
       :model-value="modelValue"
@@ -47,10 +60,7 @@ const describedby = computed(() => {
       :describedby="describedby"
       @update:model-value="emit('update:modelValue', $event)"
     />
-    <p v-if="hint !== undefined" :id="hintId" class="form-field__hint" data-hint>{{ hint }}</p>
-    <p v-if="hasErrors" :id="errorId" class="form-field__error" data-error>
-      <span v-for="message in errors" :key="message">{{ message }}</span>
-    </p>
+    <FieldNotes :hint="hint" :hint-id="hintId" :error-id="errorId" :errors="errors" />
   </div>
 </template>
 
@@ -61,18 +71,6 @@ const describedby = computed(() => {
 }
 
 .form-field__label {
-  font-weight: var(--weight-medium);
-}
-
-.form-field__hint {
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
-}
-
-.form-field__error {
-  display: grid;
-  color: var(--color-danger);
-  font-size: var(--text-sm);
   font-weight: var(--weight-medium);
 }
 </style>
