@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.2.1] - 2026-10-13
+
+- test(e2e): expose the ETag header from the mock API like the backend does
+
 ## [0.2.0] - 2026-10-13
 
 - ci(frontend): run on push and pull request, skip the review without an API key
