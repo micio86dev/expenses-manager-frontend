@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.3] - 2026-10-13
+
+- chore: stop tracking the generated Gentle AI cache
+- test(validation): cover the first failed rule per field and the passing path
+- fix(validation): reject failed rules that belong to no field and key field notes by index
+- refactor(domain): validate expense and category forms with zod
+
 ## [0.2.2] - 2026-10-13
 
 - test(register): preload the dashboard route so the post-submit navigation is deterministic
