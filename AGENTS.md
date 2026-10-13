@@ -37,7 +37,8 @@ support 7.x.
   `Accept-Language`). Responses are camelized; failures throw `ApiError` (Problem Details).
 - i18n: use `useTranslate()` or `translate()` with typed `MessageKey`s. Every user-facing string
   lives in `src/i18n/locales`. Italian is allowed only in `locales/it.ts`. Sentence-case, plain copy.
-- Styling: use design tokens (`var(--...)` from `src/styles/tokens.css`). No hard-coded colours.
+- Styling: use design tokens (`var(--...)` from `src/styles/tokens.css`). No hard-coded colours,
+  except the category palette mirrored in `src/domain/categories.ts` (see the review rules).
   Targets are at least 44px, focus is visible, colour is never the only signal, motion respects
   `prefers-reduced-motion`.
 - TDD: write the failing test first. Thresholds are 90% on lines, functions, statements and
@@ -67,7 +68,9 @@ is checkable on a diff.
 - Every user-facing string goes through a typed `MessageKey` and exists in both `it` and `en`.
 - Accessibility: every control has a label, focus is visible and managed in dialogs, targets are
   at least 44px, colour is never the only signal.
-- No hard-coded colours (design tokens only), no dead or duplicated code, English-only code
+- No hard-coded colours (design tokens only), except the category palette in
+  `src/domain/categories.ts`: its hex values are sent to the API and mirror the `--category-*`
+  tokens, which `tests/tokens.test.ts` checks. No dead or duplicated code, English-only code
   and comments (Italian only in `locales/it.ts`).
 - Every change ships with a test (unit, and e2e when a user flow changes).
 

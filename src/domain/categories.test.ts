@@ -3,6 +3,7 @@ import { makeCategory } from '../../tests/fixtures'
 import {
   CATEGORY_COLORS,
   CATEGORY_ICONS,
+  MAX_CATEGORY_NAME_LENGTH,
   RECENT_CATEGORY_CAP,
   recentCategories,
   recordRecentCategory,
@@ -54,12 +55,17 @@ describe('validateCategoryForm', () => {
   })
 
   it('rejects names longer than 60 characters', () => {
-    const result = validateCategoryForm({ ...valid, name: 'x'.repeat(61) })
+    const result = validateCategoryForm({
+      ...valid,
+      name: 'x'.repeat(MAX_CATEGORY_NAME_LENGTH + 1),
+    })
     expect(result).toEqual({
       ok: false,
       errors: { name: 'categories.form.errors.nameTooLong' },
     })
-    expect(validateCategoryForm({ ...valid, name: 'x'.repeat(60) }).ok).toBe(true)
+    expect(validateCategoryForm({ ...valid, name: 'x'.repeat(MAX_CATEGORY_NAME_LENGTH) }).ok).toBe(
+      true,
+    )
   })
 
   it('compares colours case-insensitively', () => {
@@ -67,6 +73,17 @@ describe('validateCategoryForm', () => {
     expect(validateCategoryForm({ ...valid, color: lower })).toMatchObject({
       ok: true,
       value: { color: valid.color },
+    })
+  })
+
+  it('reports the name, colour and icon problems in one pass', () => {
+    expect(validateCategoryForm({ name: 'x'.repeat(61), color: '#123456', icon: 'nope' })).toEqual({
+      ok: false,
+      errors: {
+        name: 'categories.form.errors.nameTooLong',
+        color: 'categories.form.errors.colorInvalid',
+        icon: 'categories.form.errors.iconInvalid',
+      },
     })
   })
 })
