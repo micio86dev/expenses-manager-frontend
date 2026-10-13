@@ -132,8 +132,7 @@ Follow the categories or expenses code as the reference. In order:
 ## Continuous integration
 
 `.github/workflows/frontend.yml` (install, typecheck, lint, coverage, build with budget,
-`pnpm audit --prod`, mocked e2e, and a `gga run --ci` review job) is dormant: it only runs on `workflow_dispatch`. The `push` and `pull_request`
-triggers are commented out on purpose; uncomment them to run it on every push.
+`pnpm audit --prod`, mocked e2e, and a `gga run --ci` review job) runs on every push and pull request to `main` and `develop`, and on demand (`workflow_dispatch`).
 Dependabot (`.github/dependabot.yml`) proposes weekly npm and GitHub Actions updates.
 
 See the [root README](../README.md) for the whole project (stack, `docker compose`, Git Flow).
