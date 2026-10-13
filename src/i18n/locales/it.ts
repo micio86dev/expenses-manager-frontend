@@ -16,6 +16,15 @@ const it = {
     email: 'Email',
     password: 'Password',
     name: 'Nome',
+    errors: {
+      emailInvalid: 'Inserisci un indirizzo email valido.',
+      emailTooLong: 'Usa al massimo 255 caratteri.',
+      passwordRequired: 'Inserisci la password.',
+      passwordTooShort: 'Usa almeno 8 caratteri.',
+      passwordTooLong: 'Usa al massimo 255 caratteri.',
+      nameRequired: 'Inserisci il tuo nome.',
+      nameTooLong: 'Usa al massimo 120 caratteri.',
+    },
     login: {
       title: 'Accedi',
       subtitle: 'Bentornato. Accedi per vedere le tue spese.',

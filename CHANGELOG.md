@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.0] - 2026-10-13
+
+- ci(frontend): run on push and pull request, skip the review without an API key
+- docs(ci): describe the manual CI triggers without the remote caveat
+- feat(forms): validate sign-in, registration and expense input with zod
+- test(api): assert the request URL from the configured base URL
+- ci(frontend): pin the dormant gga job to a reviewed commit
+- docs(frontend): format CHANGELOG with Prettier
+- docs(frontend): complete the component README with recipes and tooling
+- ci(frontend): add dormant Guardian Angel review job
+- docs(frontend): add checkable review rules to AGENTS.md
+- chore(tooling): run gga last in pre-commit and add review and memory-sync targets
+- chore(tooling): add Engram project config and Guardian Angel setup
+
 ## [0.1.0] - 2026-10-12
 
 - docs(frontend): document test layers, lighthouse, env and CI
@@ -42,4 +56,3 @@
 - feat(styles): add design tokens and self-hosted font
 - chore(tooling): add pnpm project, lint, test and build setup
 - chore: initialize frontend repository
-

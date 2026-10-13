@@ -19,7 +19,8 @@ describe('api singleton', () => {
     tokenStorage.set('abc')
     await apiClient.request('GET', '/auth/me')
     const [url, init] = fetchMock.mock.calls[0] ?? []
-    expect(url).toBe('/api/v1/auth/me')
+    // The base URL comes from the environment (the container sets it); assert the same source the client uses.
+    expect(url).toBe(`${import.meta.env.VITE_API_BASE_URL ?? '/api/v1'}/auth/me`)
     const headers = new Headers(init?.headers)
     expect(headers.get('Authorization')).toBe('Bearer abc')
     expect(headers.get('Accept-Language')).toBe('en')

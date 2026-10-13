@@ -63,7 +63,7 @@ describe('ExpenseForm', () => {
     const wrapper = render()
     await wrapper.get('input[inputmode=decimal]').setValue('1.234,56')
     await wrapper.get('select[data-category]').setValue('c2')
-    await wrapper.get('input[data-description]').setValue('  Train ticket ')
+    await wrapper.get('textarea[data-description]').setValue('  Train ticket ')
     await wrapper.get('form').trigger('submit')
     expect(wrapper.emitted('submit')).toEqual([
       [

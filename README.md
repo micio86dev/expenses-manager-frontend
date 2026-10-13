@@ -2,6 +2,8 @@
 
 Vue 3 + TypeScript (strict) single-page app for the Expenses Manager API.
 The HTTP contract lives in `contracts/openapi.yaml` (copied from the superproject).
+This is the component guide for the frontend submodule. For the whole project (architecture, quick
+start with `./start.sh`, Docker, Git Flow, releases) read the [root README](../README.md).
 
 ## Requirements
 
@@ -36,17 +38,24 @@ Enable the repository hooks once with `git config core.hooksPath .githooks`
 | `pnpm gen:api`              | Regenerate the API types from the local contract copy                   |
 | `pnpm budget`               | Fail when initial JS exceeds 150 kB gzip (run after `vite build`)       |
 
-`make setup|test|coverage|lint|typecheck|e2e|build|format` wrap the same commands.
+`make setup|test|coverage|lint|typecheck|e2e|e2e-fullstack|lighthouse|build|format` wrap the same
+commands. Two more targets cover tooling: `make review` runs Guardian Angel on the whole PR
+(`gga run --pr-mode`, see below) and `make memory-sync` delegates to the superproject root.
 The first e2e run needs a browser: `pnpm exec playwright install chromium`.
 
 ## Environment
 
-| Variable            | Used by                | Default                                                 |
-| ------------------- | ---------------------- | ------------------------------------------------------- |
-| `VITE_API_BASE_URL` | the app (build or dev) | `http://localhost:8000/api/v1`                          |
-| `E2E_API_URL`       | `pnpm e2e:fullstack`   | `http://localhost:${API_PORT:-8000}`                    |
-| `E2E_BASE_URL`      | `pnpm e2e:fullstack`   | `http://localhost:5173`                                 |
-| `API_PORT`          | `pnpm e2e:fullstack`   | `8000` (same variable as the root `docker-compose.yml`) |
+| Variable            | Used by                | Default                                                    |
+| ------------------- | ---------------------- | ---------------------------------------------------------- |
+| `VITE_API_BASE_URL` | the app (build or dev) | `http://localhost:8000/api/v1`                             |
+| `E2E_API_URL`       | `pnpm e2e:fullstack`   | `http://localhost:${API_PORT:-8000}`                       |
+| `E2E_BASE_URL`      | `pnpm e2e:fullstack`   | `http://localhost:5173`                                    |
+| `API_PORT`          | `pnpm e2e:fullstack`   | `8000` (same variable as the root `docker-compose.yml`)    |
+| `API_ORIGIN`        | `prod` Docker image    | `http://localhost:8000` (allowed in the CSP `connect-src`) |
+| `CI`                | Playwright configs     | unset (set by CI: retries, no server reuse)                |
+
+`VITE_API_BASE_URL` is also a `docker/Dockerfile` build argument (default `/api/v1` for the `prod`
+target). It is read in `src/api/index.ts` and falls back to `/api/v1` when unset.
 
 ## Tests
 
@@ -83,11 +92,47 @@ few points between runs.
 
 Chromium comes from Playwright (`pnpm exec playwright install chromium`).
 
+## Adding a language
+
+1. Create `src/i18n/locales/<code>.ts` with the same keys as `en.ts`.
+2. Add one entry to `src/i18n/registry.ts`.
+3. Add one loader line to `localeLoaders` in `src/lib/dates.ts` (dayjs locale).
+
+The type checker and the key-parity test fail until all three exist.
+
+## Adding a listable resource
+
+Follow the categories or expenses code as the reference. In order:
+
+1. **Contract**: update `contracts/openapi.yaml` in the superproject, then run `pnpm contract`
+   (copies it and regenerates `src/api/schema.d.ts`; never edit either by hand).
+2. **API types and mapper**: export the type in `src/api/types.ts` (`Camelize<Schemas[...]>`).
+   Snake to camel mapping is done once in `src/api/client.ts` (`camelizeKeys`).
+3. **API module**: `src/api/<resource>.ts` (`create<Resource>Api(client)`), registered in
+   `src/api/index.ts`.
+4. **Store**: `src/stores/<resource>.ts` (Pinia) with the load, filter and optimistic mutations.
+5. **Domain selectors**: pure functions (filtering, grouping, validation) in `src/domain/`.
+6. **Composable**: shared view behaviour (filters in the URL query, formatting) in
+   `src/composables/`.
+7. **View, page and route**: container in `src/views/`, thin lazy page in `src/pages/`, route in
+   `src/router/index.ts`; presentational parts in `src/components/`.
+8. **i18n keys**: add every string to both `locales/it.ts` and `locales/en.ts`.
+9. **Tests**: unit tests next to each file, plus an e2e spec in `e2e/` using `installApp`
+   (mock handlers in `e2e/support/mock-api.ts`) and `expectNoViolations`.
+
+## Code review and shared memory
+
+- **Guardian Angel**: `.gga` points to the "Review rules" of `AGENTS.md`. The `pre-commit` hook
+  runs `gga run` last (after lint and typecheck) when `gga` is installed, and prints a skip message
+  otherwise. Do not run `gga install`: the hooks live in `.githooks`. Before opening a PR run
+  `make review`.
+- **Engram**: `.engram/config.json` names the shared memory project (`expenses_manager`). Syncing
+  is done from the superproject root (`make memory-sync` there).
+
 ## Continuous integration
 
 `.github/workflows/frontend.yml` (install, typecheck, lint, coverage, build with budget,
-`pnpm audit --prod`, mocked e2e) is dormant: it only runs on `workflow_dispatch` until the
-repository has a remote and the commented `push` and `pull_request` triggers are enabled.
+`pnpm audit --prod`, mocked e2e, and a `gga run --ci` review job) runs on every push and pull request to `main` and `develop`, and on demand (`workflow_dispatch`).
 Dependabot (`.github/dependabot.yml`) proposes weekly npm and GitHub Actions updates.
 
 See the [root README](../README.md) for the whole project (stack, `docker compose`, Git Flow).
@@ -140,8 +185,7 @@ Key rules, enforced by ESLint and tests:
 
 `it` is the default and `en` is available. The choice is stored in `localStorage`, saved on the
 account when signed in, and kept in sync with `<html lang>` and the dayjs locale.
-To add a language: create `src/i18n/locales/<code>.ts`, add one line to `src/i18n/registry.ts`
-and one loader line to `src/lib/dates.ts` (the type checker and the parity test fail until both exist).
+See [Adding a language](#adding-a-language) to register another one.
 
 ## Authentication
 

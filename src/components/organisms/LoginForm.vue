@@ -1,25 +1,33 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useTranslate } from '@/composables/useTranslate'
+import { useValidatedForm } from '@/composables/useValidatedForm'
+import { type LoginFormValues, validateLoginForm } from '@/domain/auth-form'
 import BaseButton from '../atoms/BaseButton.vue'
 import ErrorAlert from '../molecules/ErrorAlert.vue'
 import FormField from '../molecules/FormField.vue'
 
-defineProps<{
+const props = defineProps<{
   submitting: boolean
   errorMessage: string | null
   fieldErrors: Record<string, string[]>
 }>()
 
-const emit = defineEmits<{ submit: [credentials: { email: string; password: string }] }>()
+const emit = defineEmits<{ submit: [credentials: LoginFormValues] }>()
 
 const t = useTranslate()
 const email = ref('')
 const password = ref('')
+const { messages, validated } = useValidatedForm(validateLoginForm, () => props.fieldErrors)
+
+function submit(): void {
+  const credentials = validated({ email: email.value, password: password.value })
+  if (credentials !== null) emit('submit', credentials)
+}
 </script>
 
 <template>
-  <form class="auth-form" novalidate @submit.prevent="emit('submit', { email, password })">
+  <form class="form-stack" novalidate @submit.prevent="submit">
     <ErrorAlert v-if="errorMessage !== null" :message="errorMessage" />
     <FormField
       v-model="email"
@@ -27,7 +35,7 @@ const password = ref('')
       type="email"
       autocomplete="email"
       required
-      :errors="fieldErrors['email'] ?? []"
+      :errors="messages('email')"
     />
     <FormField
       v-model="password"
@@ -35,15 +43,8 @@ const password = ref('')
       type="password"
       autocomplete="current-password"
       required
-      :errors="fieldErrors['password'] ?? []"
+      :errors="messages('password')"
     />
     <BaseButton type="submit" :loading="submitting">{{ t('auth.login.submit') }}</BaseButton>
   </form>
 </template>
-
-<style scoped>
-.auth-form {
-  display: grid;
-  gap: var(--space-4);
-}
-</style>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
+import FieldNotes from './FieldNotes.vue'
 
 const props = defineProps<{
   label: string
@@ -50,10 +51,7 @@ const describedby = computed(() => (hasErrors.value ? `${hintId} ${errorId}` : h
         <option v-for="code in currencies" :key="code" :value="code">{{ code }}</option>
       </select>
     </div>
-    <p :id="hintId" class="amount-input__hint" data-hint>{{ hint }}</p>
-    <p v-if="hasErrors" :id="errorId" class="amount-input__error" data-error>
-      <span v-for="message in errors" :key="message">{{ message }}</span>
-    </p>
+    <FieldNotes :hint="hint" :hint-id="hintId" :error-id="errorId" :errors="errors ?? []" />
   </div>
 </template>
 
@@ -67,53 +65,40 @@ const describedby = computed(() => (hasErrors.value ? `${hintId} ${errorId}` : h
   font-weight: var(--weight-medium);
 }
 
+/* Same frame as every other field: a 2px border, the base text size, and the currency inside it. */
 .amount-input__row {
   display: flex;
-  align-items: flex-end;
-  gap: var(--space-3);
-  border-bottom: 3px solid var(--color-text);
+  align-items: stretch;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  overflow: hidden;
 }
 
-/* The signature element: a large, borderless, tabular amount. */
 .amount-input__field {
   flex: 1;
   min-width: 0;
-  padding: var(--space-1) 0;
+  min-height: var(--target-min);
+  padding: var(--space-2) var(--space-3);
   border: 0;
   background: transparent;
   color: var(--color-text);
   font: inherit;
-  font-size: var(--text-amount);
-  font-weight: var(--weight-bold);
-  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
 }
 
-.amount-input__field:focus-visible {
-  outline-offset: 4px;
+.amount-input__row:focus-within {
+  border-color: var(--color-text);
 }
 
 .amount-input__currency {
   flex: none;
-  min-height: var(--target-min);
-  margin-bottom: var(--space-2);
-  padding: 0 var(--space-2);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-md);
+  padding: 0 var(--space-3);
+  border: 0;
+  border-left: 2px solid var(--color-border);
   background: var(--color-surface);
   color: var(--color-text);
   font: inherit;
-  font-weight: var(--weight-medium);
-}
-
-.amount-input__hint {
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
-}
-
-.amount-input__error {
-  display: grid;
-  color: var(--color-danger);
-  font-size: var(--text-sm);
   font-weight: var(--weight-medium);
 }
 

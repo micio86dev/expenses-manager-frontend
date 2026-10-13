@@ -28,9 +28,13 @@ describe('RegisterView', () => {
       password: 'password1',
       locale: 'en',
     })
-    await vi.waitFor(() => {
-      expect(router.currentRoute.value.name).toBe('dashboard')
-    })
+    // The dashboard route is lazy: its first import can outlast the default one-second wait under load.
+    await vi.waitFor(
+      () => {
+        expect(router.currentRoute.value.name).toBe('dashboard')
+      },
+      { timeout: 5000 },
+    )
   })
 
   it('shows the server problem and stays on the page', async () => {
@@ -43,6 +47,9 @@ describe('RegisterView', () => {
       }),
     )
     const { wrapper, router } = await renderWithApp(RegisterView, { route: '/register' })
+    await wrapper.get('input[autocomplete=name]').setValue('Ada')
+    await wrapper.get('input[type=email]').setValue('ada@example.com')
+    await wrapper.get('input[type=password]').setValue('password1')
     await wrapper.get('form').trigger('submit')
     await flushPromises()
     expect(wrapper.text()).toContain('Already taken')

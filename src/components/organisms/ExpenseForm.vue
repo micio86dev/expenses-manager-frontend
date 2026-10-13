@@ -1,15 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { FieldErrors } from '@/api/errors'
-import type { Category } from '@/api/types'
+import type { Category, ExpenseInput } from '@/api/types'
 import { useTranslate } from '@/composables/useTranslate'
-import {
-  type ExpenseFormErrors,
-  type ExpenseFormValues,
-  validateExpenseForm,
-} from '@/domain/expense-form'
+import { useValidatedForm } from '@/composables/useValidatedForm'
+import { type ExpenseFormValues, validateExpenseForm } from '@/domain/expense-form'
 import { currencyOptions } from '@/domain/money'
-import type { ExpenseInput } from '@/api/types'
 import BaseButton from '../atoms/BaseButton.vue'
 import AmountInput from '../molecules/AmountInput.vue'
 import CategoryBadge from '../molecules/CategoryBadge.vue'
@@ -34,39 +30,28 @@ const currency = ref(props.initial.currency)
 const description = ref(props.initial.description)
 const categoryId = ref(props.initial.categoryId)
 const spentOn = ref(props.initial.spentOn)
-const errors = ref<ExpenseFormErrors>({})
 
 const currencies = currencyOptions(props.initial.currency)
 const categoryOptions = computed(() =>
   props.categories.map((category) => ({ value: category.id, label: category.name })),
 )
 
-// A message per field: what this form found, otherwise what the server rejected.
-function messages(field: keyof ExpenseFormValues, serverField: string): string[] {
-  const key = errors.value[field]
-  if (key !== undefined) return [t(key)]
-  return props.serverErrors?.[serverField] ?? []
-}
+const { messages, validated } = useValidatedForm(validateExpenseForm, () => props.serverErrors)
 
 function submit(): void {
-  const result = validateExpenseForm({
+  const expense = validated({
     amount: amount.value,
     currency: currency.value,
     description: description.value,
     categoryId: categoryId.value,
     spentOn: spentOn.value,
   })
-  if (result.ok) {
-    errors.value = {}
-    emit('submit', result.value)
-  } else {
-    errors.value = result.errors
-  }
+  if (expense !== null) emit('submit', expense)
 }
 </script>
 
 <template>
-  <form class="expense-form" novalidate @submit.prevent="submit">
+  <form class="form-stack" novalidate @submit.prevent="submit">
     <AmountInput
       v-model="amount"
       v-model:currency="currency"
@@ -105,6 +90,7 @@ function submit(): void {
     <FormField
       v-model="description"
       data-description
+      multiline
       :label="t('expenses.form.description')"
       :errors="messages('description', 'description')"
     />
@@ -130,11 +116,6 @@ function submit(): void {
 </template>
 
 <style scoped>
-.expense-form {
-  display: grid;
-  gap: var(--space-4);
-}
-
 .recent {
   margin: 0;
   padding: 0;
