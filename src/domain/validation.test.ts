@@ -3,7 +3,10 @@ import { z } from 'zod'
 import type { MessageKey } from '@/i18n/keys'
 import { runSchema } from './validation'
 
-const KEYS: ReadonlySet<MessageKey> = new Set<MessageKey>(['auth.errors.nameRequired'])
+const KEYS: ReadonlySet<MessageKey> = new Set<MessageKey>([
+  'auth.errors.nameRequired',
+  'auth.errors.nameTooLong',
+])
 const schema = z.object({
   name: z
     .string({ error: 'auth.errors.nameRequired' })
@@ -15,6 +18,26 @@ describe('runSchema', () => {
     expect(runSchema(schema, { name: '' }, KEYS)).toEqual({
       ok: false,
       errors: { name: 'auth.errors.nameRequired' },
+    })
+  })
+
+  it('keeps the first failed rule when a field fails several', () => {
+    const twice = z.object({
+      name: z
+        .string({ error: 'auth.errors.nameRequired' })
+        .min(5, { error: 'auth.errors.nameRequired' })
+        .max(1, { error: 'auth.errors.nameTooLong' }),
+    })
+    expect(runSchema(twice, { name: 'Ada' }, KEYS)).toEqual({
+      ok: false,
+      errors: { name: 'auth.errors.nameRequired' },
+    })
+  })
+
+  it('returns the parsed value when every rule passes', () => {
+    expect(runSchema(schema, { name: 'Ada' }, KEYS)).toEqual({
+      ok: true,
+      value: { name: 'Ada' },
     })
   })
 
